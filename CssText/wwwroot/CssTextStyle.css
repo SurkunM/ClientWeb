@@ -1,0 +1,31 @@
+﻿body {
+    background: #1F1F1F;
+    
+}
+
+.body {
+    width: 745px;
+    height: 426px;
+    background-color: #FEEED5;
+    position: absolute;
+    top:20%;
+    right:20%;
+    font-family: Arial;
+}
+
+.content_name {
+    color: #378DB2;
+}
+
+.content_text {
+    color: #636462;
+    font-family:Arial;
+}
+
+.teg{
+    font-size: 30px;
+}
+
+.content_text > p{
+   text-indent:15px;
+}
