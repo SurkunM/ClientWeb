@@ -1,0 +1,36 @@
+﻿body {
+    background: #1F1F1F;
+}
+
+form {
+    width: 860px;
+    height: 315px;
+    position: fixed;
+    top: 20%;
+    left: 20%;
+    background: #CBCBCB;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    font-size:20px;
+    font-family: Arial;
+}
+
+tr.title {
+    background: #3698DB;
+    color:#FFFFFF;
+}
+
+tr.odd_row {
+    background: #EEEEEE;
+}
+
+tr.even_row {
+    background: #FFFFFF;
+}
+
+td {
+    height: 48px;    
+}
