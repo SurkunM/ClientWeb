@@ -6,48 +6,72 @@
 </head>
 <body>
     <form action="/Test" method="post">
-        <textarea placeholder="Введите многострочный текст"></textarea>
+        <div>
+            <textarea placeholder="Введите многострочный текст"></textarea>
+        </div>
 
-        <label for="client_name">Введите Имя</label>
-        <input type="text" id="client_name" name="name" value="Name" />
+        <div>
+            <label for="client_name">Введите Имя</label>
+            <input type="text" id="client_name" name="name" placeholder="Name">
+        </div>
 
-        <label>
-            Введите Возраст<input type="text" name="age" value="Age" />
-        </label>
+        <div>
+            <label>
+                Введите Возраст<input type="text" name="age" placeholder="Age">
+            </label>
+        </div>
 
-        <label>
-            <input checked type="checkbox" name="checkbox_1" />
-            <input type="checkbox" name="checkbox_2" />
-            <input type="checkbox" name="checkbox_3" />
-        </label>
+        <div>
+            <label>
+                <input checked type="checkbox" value="1" name="checkbox_1">1
+            </label>
 
-        <label>
-            <input checked type="radio" value="1" name="radioButton" />1
-        </label>
+            <label>
+                <input type="checkbox" value="2" name="checkbox_2">2
+            </label>
 
-        <label>
-            <input type="radio" value="2" name="radioButton" />2
-        </label>
+            <label>
+                <input type="checkbox" value="3" name="checkbox_3">3
+            </label>
+        </div>
 
-        <label>
-            <input type="radio" value="3" name="radioButton" />3
-        </label>
+        <div>
+            <label>
+                <input checked type="radio" value="1" name="radioButton">1
+            </label>
 
-        <select name="selectMultiple" multiple>
-            <option selected value="1">Опция 1</option>
-            <option value="2">Опция 2</option>
-            <option value="3">Опция 3</option>
-        </select>
+            <label>
+                <input type="radio" value="2" name="radioButton">2
+            </label>
 
-        <select name="selectSingle">
-            <option selected value="1">Опция 1</option>
-            <option value="2">Опция 2</option>
-            <option value="3">Опция 3</option>
-        </select>
+            <label>
+                <input type="radio" value="3" name="radioButton">3
+            </label>
+        </div>
 
-        <a href="HtmlPage2.html" target="_blank">Страница 2</a>
+        <div>
+            <select name="selectMultiple" multiple>
+                <option selected value="1">Опция 1</option>
+                <option value="2">Опция 2</option>
+                <option value="3">Опция 3</option>
+            </select>
+        </div>
 
-        <button type="submit">Отправить</button>
+        <div>
+            <select name="selectSingle">
+                <option selected value="1">Опция 1</option>
+                <option value="2">Опция 2</option>
+                <option value="3">Опция 3</option>
+            </select>
+        </div>
+
+        <div>
+            <a href="HtmlPage2.html" target="_blank">Страница 2</a>
+        </div>
+
+        <div>
+            <button type="submit">Отправить</button>
+        </div>
     </form>
 </body>
 </html>
