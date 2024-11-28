@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Css форма</title>
+    <link rel="stylesheet" href="Normalize.css">
+    <link rel="stylesheet" href="Style.css">
+</head>
+
+<body>
+    <div class="content">
+        <form class="form_body" action="/test" method="post">
+            <div class="title form_text">
+                <label>Отправить заявку</label>
+            </div>
+
+            <div class="form_text">
+                <label>
+                    <b>Ваше имя</b>
+                </label>
+            </div>
+
+            <div class="form_value">
+                <input type="text" name="Name" placeholder="Ваше имя *">
+            </div>
+
+            <div class="form_text">
+                <label>
+                    <b>Ваш номер телефона</b>
+                </label>
+            </div>
+
+            <div class="form_value">
+                <input type="tel" name="Phone" placeholder="Ваш номер телефона *">
+            </div>
+
+            <div class="form_text">
+                <label>
+                    <b>Ваш email или VK</b>
+                </label>
+            </div>
+
+            <div class="form_value">
+                <input type="email" name="Email" placeholder="Ваш email или VK *">
+            </div>
+
+            <div class="form_text">
+                <label>
+                    <b>Комментарий</b>
+                </label>
+            </div>
+
+            <div class="form_value">
+                <textarea placeholder="Комментарий (не обязательно)"></textarea>
+            </div>
+
+            <div class="form_text">
+                <label>Заполните и отправте форму, и мы перезвоним Вам по указанному номеру</label>
+            </div>
+
+            <button class="btn" type="submit">
+                <b>Отправить заявку</b>
+            </button>
+        </form>
+    </div>
+</body>
+</html>

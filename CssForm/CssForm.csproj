@@ -8,11 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Remove="wwwroot\CssFormHtml.html" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="wwwroot\CssFormHtml.html" />
+		<Content Remove="wwwroot\Html.html" />
 	</ItemGroup>
 
 </Project>
