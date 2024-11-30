@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="wwwroot\CssTableHtml.html" />
+		<Content Include="wwwroot\Html.html" />
 	</ItemGroup>
 
 </Project>
