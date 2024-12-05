@@ -4,11 +4,11 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<!--<EnableDefaultContentItems>false</EnableDefaultContentItems>	-->	
+	<!--	<EnableDefaultContentItems>false</EnableDefaultContentItems>	-->
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="wwwroot\Html.html" />
+		<Content Include="wwwroot\html.html" />
 		<Content Include="wwwroot\script.js" />
 	</ItemGroup>
 
