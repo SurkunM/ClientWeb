@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CssText", "CssText\CssText.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArraysWorking", "ArraysWorking\ArraysWorking.csproj", "{09BB370D-B2D9-4F67-ABE2-C11EBE93B295}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectsWorking", "ObjectsWorking\ObjectsWorking.csproj", "{9B6D0C5E-48B0-46E5-907E-C6AF2DAF5D66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{09BB370D-B2D9-4F67-ABE2-C11EBE93B295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09BB370D-B2D9-4F67-ABE2-C11EBE93B295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09BB370D-B2D9-4F67-ABE2-C11EBE93B295}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B6D0C5E-48B0-46E5-907E-C6AF2DAF5D66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B6D0C5E-48B0-46E5-907E-C6AF2DAF5D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B6D0C5E-48B0-46E5-907E-C6AF2DAF5D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B6D0C5E-48B0-46E5-907E-C6AF2DAF5D66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
