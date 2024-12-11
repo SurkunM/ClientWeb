@@ -1,0 +1,36 @@
+﻿* {
+    box-sizing:border-box;
+}
+
+.new-todo-form > *{
+    display: inline-block;
+    vertical-align:top;
+}
+
+.new-todo-form .label{
+    display:block;
+}
+
+.error-massage {
+    color: #f00;
+    display: none;
+}
+
+.invalid ~ .error-massage {
+    display:block;
+}
+
+.new-todo-text-field {
+    width: 200px;
+}
+
+.todo-list{
+    padding: 0;
+}
+
+.todo-list > li + li{
+    margin-top: 10px;
+}
+.invalid ~ .new-todo-form .label {
+    color:#f00;
+}
