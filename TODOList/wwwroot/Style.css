@@ -1,36 +1,41 @@
 ﻿* {
-    box-sizing:border-box;
+    box-sizing: border-box;
 }
 
-.new-todo-form > *{
+.new-todo-form > * {
     display: inline-block;
-    vertical-align:top;
+    vertical-align: top;
 }
 
-.new-todo-form .label{
-    display:block;
+.new-todo-form .label {
+    display: block;
 }
 
-.error-massage {
+.error-message {
     color: #f00;
     display: none;
 }
 
-.invalid ~ .error-massage {
-    display:block;
+.invalid ~ .error-message {
+   display: block;
 }
 
 .new-todo-text-field {
     width: 200px;
 }
 
-.todo-list{
+.todo-list {
     padding: 0;
 }
 
-.todo-list > li + li{
-    margin-top: 10px;
+.todo-list > li + li {
+      margin-top: 10px;
 }
+
+.invalid  {
+    border: #f00 solid 1px;
+}
+
 .invalid ~ .new-todo-form .label {
-    color:#f00;
+    color: #f00;
 }
