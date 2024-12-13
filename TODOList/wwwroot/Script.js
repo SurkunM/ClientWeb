@@ -23,8 +23,8 @@
             newTodoItem.innerHTML = `
                 <div>
                     <span class="todo-text"></span>
-                    <button class="edit-button" type="button">Редактировать</button>
-                    <button class="delete-button" type="button">Удалить</button>
+                    <button class="edit-button btn" type="button">Редактировать</button>
+                    <button class="delete-button btn" type="button">Удалить</button>
                 </div>
             `;
 
@@ -38,8 +38,8 @@
                 newTodoItem.innerHTML = `
                     <div>
                         <input class="edit-todo-text-field" type="text">
-                        <button class="save-button" type="button">Сохранить</button>
-                        <button class="cancel-button" type="button">Отмена</button>
+                        <button class="save-button btn" type="button">Сохранить</button>
+                        <button class="cancel-button btn" type="button">Отмена</button>
                     <div class="error-message">Необходимо задать значение</div>
                     </div>
                     `;
@@ -52,18 +52,27 @@
                 });
 
                 newTodoItem.querySelector(".save-button").addEventListener("click", function () {
+                    saveEditedTodoText();
+                });
+
+                editTodoTextField.addEventListener("keyup", e => {
+                    if (e.code === "Enter") {
+                        saveEditedTodoText();
+                    }
+                });
+
+                function saveEditedTodoText() {
                     const editedTodoText = editTodoTextField.value.trim();
 
                     if (editedTodoText.length === 0) {
                         editTodoTextField.classList.add("invalid");
-                        //TODO: стили о ошибке и т.д
 
                         return;
                     }
 
                     newTodoText = editedTodoText;
                     setViewMode();
-                });
+                };
             });
         }
 

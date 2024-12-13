@@ -2,7 +2,20 @@
     box-sizing: border-box;
 }
 
-.new-todo-form > * {
+.content {
+    height: 100vh;
+    padding: 50px;
+    background-color: #FEEED5;
+    border: #000 solid 15px;
+    color: #636462;     
+}
+
+.btn {
+    background-color: #388DB2;
+    border-color: transparent;
+}
+
+.new-todo-form>* {
     display: inline-block;
     vertical-align: top;
 }
@@ -16,8 +29,8 @@
     display: none;
 }
 
-.invalid ~ .error-message {
-   display: block;
+.invalid~.error-message {
+    display: block;
 }
 
 .new-todo-text-field {
@@ -28,14 +41,15 @@
     padding: 0;
 }
 
-.todo-list > li + li {
-      margin-top: 10px;
+.todo-list>li+li {
+    margin-top: 10px;
 }
 
-.invalid  {
+.invalid {
     border: #f00 solid 1px;
+    outline: #f00 solid 1px;
 }
 
-.invalid ~ .new-todo-form .label {
-    color: #f00;
+.invalid~.new-todo-form .label {
+    color: #f00;    
 }
