@@ -1,0 +1,45 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+h1{
+    margin:5px 0;
+}
+.parent {
+    width: 100vw;
+    height: 100vh;
+    display: table-cell;
+    vertical-align: middle;
+    background-color: #808080;
+}
+
+.content {
+    margin: 0 auto;
+    max-width: 400px;
+    background-color: #FEEED5;
+    border: #000 solid 1px;
+    padding: 5px 15px;
+}
+
+div.text {    
+    display:block;
+}
+
+.temperature-conversion-form > * {
+    display: inline-block;
+    vertical-align: top;
+    margin: 5px 0;
+}
+
+.btn {
+    background-color: #388DB2;        
+}
+
+.error-message {
+    color: #f00;
+    display: none;
+}
+
+.invalid ~ .error-message {
+    display: block;
+}
