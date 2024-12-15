@@ -32,6 +32,7 @@ div.form-text {
 
 .incoming-temperature-field{
     text-align:right;
+    width: 220px;
 }
 
 .temperature-conversion-form > * {

@@ -12,23 +12,33 @@
         let incomingTemperature = incomingTemperatureField.value.trim();
 
         if (incomingTemperature.length === 0) {
-            incomingTemperatureField.classList.add("invalid");
+            addInvalidClass();
 
             return;
         }
 
-        const celsiusTemperature = Number(incomingTemperatureField.value);        
+        const celsiusTemperature = Number(incomingTemperatureField.value);       
+        
+        if(isNaN(celsiusTemperature)){
+            addInvalidClass();
+
+            return;
+        }
 
         setResultNode(kelvinConversionResult, celsiusTemperature + 273.15);
         setResultNode(fahrenheitConvsersionResult, celsiusTemperature * 1.8 + 32)               
 
-        function setResultNode(node, conversionResult) {
+        function setResultNode(node, conversionResult) {          
             if (node.childElementCount === 1) {
                 node.appendChild(document.createElement("label"));
             }
 
             const lastChild = node.querySelector(":last-child");
             lastChild.textContent = conversionResult;
+        };
+
+        function addInvalidClass(){
+            incomingTemperatureField.classList.add("invalid");
         }
     });
 });
