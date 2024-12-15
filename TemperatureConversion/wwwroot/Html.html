@@ -11,18 +11,25 @@
     <div class="parent">
         <div class="content">
             <h1>Перевод температуры</h1>
+
             <form class="temperature-conversion-form" id="temperature-conversion-form">
-                <label class="text">Введите температуру в градусах Цельсия</label>
+                <label class="form-text">Введите температуру в градусах Цельсия</label>
 
                 <div>
-                    <input id="incoming-temperature-field" type="text">
-                    <div class="error-message">Необходимо задать значение</div>
+                    <input class="incoming-temperature-field" id="incoming-temperature-field" type="text">
+                    <div class="error-message">Необходимо задать значение!</div>
                 </div>
 
                 <button class="btn" type="submit">Перевести</button>
 
-                <div class="text" id="temperature-conversion-result">
-                    <label >Результат: </label>
+                <div class="form-text">
+                    <div id="kelvin-conversion-result">
+                        <label>Результат в градусах Кельвина: </label>                        
+                    </div>
+
+                    <div id="fahrenheit-conversion-result">
+                        <label>Результат в градусах Фаренгейта: </label>                        
+                    </div>
                 </div>
             </form>
         </div>

@@ -1,7 +1,8 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
     const incomingTemperatureField = document.getElementById("incoming-temperature-field");
     const temperatureConversionForm = document.getElementById("temperature-conversion-form");
-    const temperatureConversionResult = document.getElementById("temperature-conversion-result");
+    const kelvinConversionResult = document.getElementById("kelvin-conversion-result");
+    const fahrenheitConvsersionResult = document.getElementById("fahrenheit-conversion-result");
 
     temperatureConversionForm.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -12,14 +13,22 @@
 
         if (incomingTemperature.length === 0) {
             incomingTemperatureField.classList.add("invalid");
+
+            return;
         }
 
-        const result = document.createElement("label");
-        result.textContent = 100;
-        
+        const celsiusTemperature = Number(incomingTemperatureField.value);        
 
-        temperatureConversionResult.appendChild(result);
+        setResultNode(kelvinConversionResult, celsiusTemperature + 273.15);
+        setResultNode(fahrenheitConvsersionResult, celsiusTemperature * 1.8 + 32)               
 
-        incomingTemperatureField.value = "";
+        function setResultNode(node, conversionResult) {
+            if (node.childElementCount === 1) {
+                node.appendChild(document.createElement("label"));
+            }
+
+            const lastChild = node.querySelector(":last-child");
+            lastChild.textContent = conversionResult;
+        }
     });
 });
