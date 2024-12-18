@@ -7,14 +7,13 @@
     display: table-cell;
     vertical-align: middle;
     height: 100vh;
-    width: 100vw;
+    width: 100vw; /*сделано растягивание*/
 }
 
 .form_body {
     margin:0 auto;     
-    width: 742px;
-    height: 520px;
-    background-color: #FEEED5;    
+    max-width: 742px;    
+    background-color: #FEEED5;        
 }
 
 .form_text {
