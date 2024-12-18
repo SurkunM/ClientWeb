@@ -15,11 +15,11 @@
 .content {
     margin: 0 auto;
     background-color: #FEEED5;
-    padding: 0px 15px;
+    padding: 0 15px;
     max-width: 747px;
 }
 
-.title > h1 {
+h1.title {
     color: #636462;
     font-weight: normal;
     font-size: 28px;
@@ -37,15 +37,15 @@
     font-weight: bold;
 }
 
-label.text {
+.context {
     color: #636462;
 }
 
-.text > p {
+.text>p {
     color: #636462;
     text-indent: 15px;
     text-align: justify;
     line-height: 1.5em;
     padding: 5px 0;
-    margin: 0px 0;
+    margin: 0 0;
 }
