@@ -8,7 +8,6 @@
 
         newTodoTextField.classList.remove("invalid");
 
-
         let newTodoText = newTodoTextField.value.trim();
 
         if (newTodoText.length === 0) {
@@ -19,12 +18,11 @@
         const newTodoItem = document.createElement("li");
 
         function setViewMode() {
-
             newTodoItem.innerHTML = `
                 <div>
                     <span class="todo-text"></span>
-                    <button class="edit-button btn" type="button">Редактировать</button>
-                    <button class="delete-button btn" type="button">Удалить</button>
+                    <button class="edit-button todo-form-button" type="button">Редактировать</button>
+                    <button class="delete-button todo-form-button" type="button">Удалить</button>
                 </div>
             `;
 
@@ -38,11 +36,11 @@
                 newTodoItem.innerHTML = `
                     <div>
                         <input class="edit-todo-text-field" type="text">
-                        <button class="save-button btn" type="button">Сохранить</button>
-                        <button class="cancel-button btn" type="button">Отмена</button>
+                        <button class="save-button todo-form-button" type="button">Сохранить</button>
+                        <button class="cancel-button todo-form-button" type="button">Отмена</button>
                     <div class="error-message">Необходимо задать значение</div>
                     </div>
-                    `;
+                `;
 
                 const editTodoTextField = newTodoItem.querySelector(".edit-todo-text-field");
                 editTodoTextField.value = newTodoText;
@@ -55,7 +53,7 @@
                     saveEditedTodoText();
                 });
 
-                editTodoTextField.addEventListener("keyup", e => {
+                editTodoTextField.addEventListener("keydown", function (e) {
                     if (e.code === "Enter") {
                         saveEditedTodoText();
                     }
@@ -66,13 +64,12 @@
 
                     if (editedTodoText.length === 0) {
                         editTodoTextField.classList.add("invalid");
-
                         return;
                     }
 
                     newTodoText = editedTodoText;
                     setViewMode();
-                };
+                }
             });
         }
 

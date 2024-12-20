@@ -2,30 +2,59 @@
     box-sizing: border-box;
 }
 
-.content {
+.todo-list-body {
     height: 100vh;
     padding: 50px;
-    background-color: #FEEED5;
-    border: #000 solid 15px;
-    color: #636462;     
+    background-color: #FFF;
+    border: #009C86 solid 25px;
+    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+    color: #676565;
 }
 
-.btn {
-    background-color: #388DB2;
-    border-color: transparent;
+.todo-list-content {
+    margin: 0 auto;
+    max-width: 500px;
+    padding: 0 5px;
+}
+
+.todo-list-content>h1 {
+    color: #009C86;
 }
 
 .new-todo-form>* {
     display: inline-block;
     vertical-align: top;
+    padding: 5px;
 }
 
 .new-todo-form .label {
     display: block;
 }
 
+.new-todo-text-field {
+    width: 250px;
+}
+
+.todo-list {
+    padding: 0;
+    margin-left: 25px;
+}
+
+.todo-list>li+li {
+    margin-top: 10px;
+}
+
+.todo-form-button {
+    color: #FFF;
+    background-color: #388DB2;
+    border: none;
+    padding: 3px 10px;
+    margin-top: 5px;
+
+}
+
 .error-message {
-    color: #f00;
+    color: #F00;
     display: none;
 }
 
@@ -33,23 +62,11 @@
     display: block;
 }
 
-.new-todo-text-field {
-    width: 200px;
-}
-
-.todo-list {
-    padding: 0;
-}
-
-.todo-list>li+li {
-    margin-top: 10px;
-}
-
 .invalid {
-    border: #f00 solid 1px;
-    outline: #f00 solid 1px;
+    border: #F00 solid 1px;
+    outline: #F00 solid 1px;
 }
 
 .invalid~.new-todo-form .label {
-    color: #f00;    
+    color: #F00;
 }
