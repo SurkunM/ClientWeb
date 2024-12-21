@@ -1,43 +1,51 @@
-﻿"use strict";
+﻿(function () {
+    "use strict";
 
-(function ()
-{
-    let array1 = [5, 3, 6, 10, 4, 2, 0, 7, 9, 1];
+    (function () {
+        const array = [5, 3, 6, 10, 4, 2, 0, 7, 9, 1];
 
-    console.log(array1);
+        console.log(`Массив чисел: ${array}`);
 
-    array1.sort((e1, e2) => e2 - e1);
+        (function () {
+            array.sort((e1, e2) => e2 - e1);
 
-    console.log(array1);
+            console.log(`Сортировка по убыванию: ${array}`);
+        })();
 
-    const array2 = array1.slice(0, 5);
-    const array3 = array1.slice(5)
+        (function () {
+            const firstFiveNumbers = array.slice(0, 5);
+            const lastFiveNumbers = array.slice(array.length - 5);
 
-    console.log(array2);
-    console.log(array3);
+            console.log(`Первые пять чисел ${firstFiveNumbers}`);
+            console.log(`Последние пять чисел ${lastFiveNumbers}`);
+        })();
 
-    const evenNumbersSum = array1
-        .filter(e => e % 2 === 0)
-        .reduce((s, c) => s + c, 0);
+        (function () {
+            const evenNumbersSum = array
+                .filter(e => e % 2 === 0)
+                .reduce((a, e) => a + e, 0);
 
-    console.log(evenNumbersSum);
+            console.log(`Сумма четных чисел массива: ${evenNumbersSum}`);
+        })();
+    })();
 
-})();
+    (function () {
+        const array = [];
 
-(function ()
-{
-    let array = [];
+        (function () {
+            for (let i = 1; i <= 100; i++) {
+                array.push(i);
+            }
 
-    for (let i = 1; i <= 100; i++)
-    {
-        array.push(i);
-    }
+            console.log(`Массив чисел от 1 до 100: ${array};`);
+        })();
 
-    console.log(array);
+        (function () {
+            const evenNumbersSquaresArray = array
+                .filter(e => e % 2 === 0)
+                .map(e => e * e);
 
-    const evenNumbersSquaresArray = array
-        .filter(e => e % 2 === 0)
-        .map(e => e * e);
-
-    console.log(evenNumbersSquaresArray);
+            console.log(`Массив квадратов четных чисел данного массива: ${evenNumbersSquaresArray};`);
+        })();
+    })();
 })();
