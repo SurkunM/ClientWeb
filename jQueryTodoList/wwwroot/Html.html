@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Todo List jQuery</title>
+    <link rel="stylesheet" href="Normalize.css">
+    <link rel="stylesheet" href="Style.css">
+    <script src="jquery-3.7.1.min.js" defer></script>
+    <script src="Script.js" defer></script>
+</head>
+<body>
+    <div class="todo-list-body">
+        <div class="todo-list-content">
+            <h1>TODO List</h1>
+
+            <form class="new-todo-form" id="new-todo-form">
+                <label class="label" for="new-todo-text-field">Введите текст заметки</label>
+
+                <div>
+                    <input class="new-todo-text-field" id="new-todo-text-field" type="text">
+                    <div class="error-message">Необходимо задать значение</div>
+                </div>
+
+                <button class="todo-form-button" type="submit">Отправить</button>
+            </form>
+
+            <ul class="todo-list" id="todo-list"></ul>
+        </div>
+    </div>
+</body>
+</html>

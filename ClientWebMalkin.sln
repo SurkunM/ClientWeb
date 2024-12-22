@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemperatureConversion", "Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Classes", "Classes\Classes.csproj", "{60A64E15-9287-439B-923F-513B3ABFF2C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jQueryTodoList", "jQueryTodoList\jQueryTodoList.csproj", "{243A0138-2CA9-4EFC-915A-8A9644766130}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{60A64E15-9287-439B-923F-513B3ABFF2C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60A64E15-9287-439B-923F-513B3ABFF2C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60A64E15-9287-439B-923F-513B3ABFF2C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{243A0138-2CA9-4EFC-915A-8A9644766130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{243A0138-2CA9-4EFC-915A-8A9644766130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{243A0138-2CA9-4EFC-915A-8A9644766130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{243A0138-2CA9-4EFC-915A-8A9644766130}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

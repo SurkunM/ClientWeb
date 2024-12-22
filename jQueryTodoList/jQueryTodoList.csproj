@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="wwwroot\Html.html" />
+		<Content Include="wwwroot\jquery-3.7.1.min.js" />
+		<Content Include="wwwroot\Normalize.css" />
+		<Content Include="wwwroot\Script.js" />
+		<Content Include="wwwroot\Style.css" />
+	</ItemGroup>
+
+</Project>
