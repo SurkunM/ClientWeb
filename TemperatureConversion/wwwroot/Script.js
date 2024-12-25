@@ -2,7 +2,7 @@
     const incomingTemperatureField = document.getElementById("incoming-temperature-field");
     const temperatureConversionForm = document.getElementById("temperature-conversion-form");
     const kelvinConversionResult = document.getElementById("kelvin-conversion-result");
-    const fahrenheitConvsersionResult = document.getElementById("fahrenheit-conversion-result");
+    const fahrenheitConversionResult = document.getElementById("fahrenheit-conversion-result");
 
     temperatureConversionForm.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -17,27 +17,27 @@
             return;
         }
 
-        const celsiusTemperature = Number(incomingTemperatureField.value);       
-        
-        if(isNaN(celsiusTemperature)){
+        const celsiusTemperature = Number(incomingTemperatureField.value);
+
+        if (isNaN(celsiusTemperature)) {
             addInvalidClass();
 
             return;
         }
 
         setResultNode(kelvinConversionResult, celsiusTemperature + 273.15);
-        setResultNode(fahrenheitConvsersionResult, celsiusTemperature * 1.8 + 32)               
+        setResultNode(fahrenheitConversionResult, celsiusTemperature * 1.8 + 32);
 
-        function setResultNode(node, conversionResult) {          
+        function setResultNode(node, conversionResult) {
             if (node.childElementCount === 1) {
                 node.appendChild(document.createElement("label"));
             }
 
             const lastChild = node.querySelector(":last-child");
             lastChild.textContent = conversionResult;
-        };
+        }
 
-        function addInvalidClass(){
+        function addInvalidClass() {
             incomingTemperatureField.classList.add("invalid");
         }
     });
