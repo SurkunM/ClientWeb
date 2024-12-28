@@ -1,7 +1,6 @@
-﻿body {
-
-    background-color: #062e24;
-    color:#FFF;
+﻿.container-fluid  {
+    height:100vh;
+    color: #FFF;
 }
 /*
 .phone-book-content {
