@@ -21,8 +21,10 @@
             newTodoItem.innerHTML = `
                 <div>
                     <span class="todo-text"></span>
-                    <button class="edit-button todo-form-button" type="button">Редактировать</button>
-                    <button class="delete-button todo-form-button" type="button">Удалить</button>
+                    <div class="todo-list-buttons">
+                        <button class="edit-button todo-form-button" type="button">Редактировать</button>
+                        <button class="delete-button todo-form-button" type="button">Удалить</button>
+                    </div>
                 </div>
             `;
 
@@ -34,32 +36,28 @@
 
             newTodoItem.querySelector(".edit-button").addEventListener("click", function () {
                 newTodoItem.innerHTML = `
-                    <div>
-                        <input class="edit-todo-text-field" type="text">
-                        <button class="save-button todo-form-button" type="button">Сохранить</button>
-                        <button class="cancel-button todo-form-button" type="button">Отмена</button>
-                    <div class="error-message">Необходимо задать значение</div>
-                    </div>
+                    <form id="edit-todo-form">
+                        <input class="edit-todo-text-field" type="text"> 
+                        <div class="todo-list-buttons">
+                            <button class="todo-form-button" type="submit">Сохранить</button>
+                            <button class="cancel-button todo-form-button" type="button">Отмена</button>
+                        </div>
+                        <div class="error-message">Необходимо задать значение</div>
+                    </form>
                 `;
 
-                const editTodoTextField = newTodoItem.querySelector(".edit-todo-text-field");
+                const editTodoForm = document.getElementById("edit-todo-form");
+
+                const editTodoTextField = editTodoForm.querySelector(".edit-todo-text-field");
                 editTodoTextField.value = newTodoText;
 
-                newTodoItem.querySelector(".cancel-button").addEventListener("click", function () {
+                editTodoForm.querySelector(".cancel-button").addEventListener("click", function () {
                     setViewMode();
                 });
 
-                newTodoItem.querySelector(".save-button").addEventListener("click", function () {
-                    saveEditedTodoText();
-                });
+                editTodoForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
 
-                editTodoTextField.addEventListener("keydown", function (e) {
-                    if (e.code === "Enter") {
-                        saveEditedTodoText();
-                    }
-                });
-
-                function saveEditedTodoText() {
                     const editedTodoText = editTodoTextField.value.trim();
 
                     if (editedTodoText.length === 0) {
@@ -69,7 +67,7 @@
 
                     newTodoText = editedTodoText;
                     setViewMode();
-                }
+                });
             });
         }
 
