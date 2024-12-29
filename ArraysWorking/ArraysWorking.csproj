@@ -8,8 +8,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="wwwroot\html.html" />
-		<Content Include="wwwroot\script.js" />
+		<Content Include="wwwroot\Html.html" />
+		<Content Include="wwwroot\Script.js" />
 	</ItemGroup>
 
 </Project>
