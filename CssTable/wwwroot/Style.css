@@ -23,7 +23,7 @@
     border: 1px solid #CECFD0;
 }
 
-.table>thead>tr>th {
+.table > thead > tr > th {
     background-color: #3698DB;
     border: 1px solid #CECFD0;
     color: #FFF;
@@ -32,15 +32,15 @@
     padding: 12px 10px;
 }
 
-.table>tbody tr:nth-child(even) {
+.table > tbody tr:nth-child(even) {
     background-color: #FFF;
 }
 
-.table>tbody tr:nth-child(odd) {
+.table > tbody tr:nth-child(odd) {
     background-color: #EEE;
 }
 
-.table>tbody td {
+.table > tbody td {
     border: 1px solid #CECFD0;
     padding: 14px 10px;
 }
