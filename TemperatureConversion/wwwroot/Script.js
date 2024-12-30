@@ -1,23 +1,23 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-    const incomingTemperatureField = document.getElementById("incoming-temperature-field");
+    const celsiusTemperatureField = document.getElementById("celsius-temperature-field");
     const temperatureConversionForm = document.getElementById("temperature-conversion-form");
-    const kelvinConversionResult = document.getElementById("kelvin-conversion-result");
-    const fahrenheitConversionResult = document.getElementById("fahrenheit-conversion-result");
+    const kelvinConversionResultLabel = document.getElementById("kelvin-conversion-result");
+    const fahrenheitConversionResultLabel = document.getElementById("fahrenheit-conversion-result");
 
     temperatureConversionForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        incomingTemperatureField.classList.remove("invalid");
+        celsiusTemperatureField.classList.remove("invalid");
 
-        let incomingTemperature = incomingTemperatureField.value.trim();
+        const celsiusTemperatureText = celsiusTemperatureField.value.trim();
 
-        if (incomingTemperature.length === 0) {
+        if (celsiusTemperatureText.length === 0) {
             addInvalidClass();
 
             return;
         }
 
-        const celsiusTemperature = Number(incomingTemperatureField.value);
+        const celsiusTemperature = Number(celsiusTemperatureField.value);
 
         if (isNaN(celsiusTemperature)) {
             addInvalidClass();
@@ -25,20 +25,24 @@
             return;
         }
 
-        setResultNode(kelvinConversionResult, celsiusTemperature + 273.15);
-        setResultNode(fahrenheitConversionResult, celsiusTemperature * 1.8 + 32);
-
-        function setResultNode(node, conversionResult) {
-            if (node.childElementCount === 1) {
-                node.appendChild(document.createElement("label"));
-            }
-
-            const lastChild = node.querySelector(":last-child");
-            lastChild.textContent = conversionResult;
+        function setConversionResultText(resultTextLabel, temperatureConversionResult) {
+            const lastChild = resultTextLabel.lastChild;
+            lastChild.textContent = temperatureConversionResult;
         }
 
         function addInvalidClass() {
-            incomingTemperatureField.classList.add("invalid");
+            celsiusTemperatureField.classList.add("invalid");
         }
+
+        function convertCelsiusToFahrenheit(celsiusTemperature) {
+            return celsiusTemperature * 1.8 + 32;
+        }
+
+        function convertCelsiusToKelvin(celsiusTemperature) {
+            return celsiusTemperature + 273.15;
+        }
+
+        setConversionResultText(kelvinConversionResultLabel, convertCelsiusToKelvin(celsiusTemperature));
+        setConversionResultText(fahrenheitConversionResultLabel, convertCelsiusToFahrenheit(celsiusTemperature));
     });
 });

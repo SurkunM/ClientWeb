@@ -2,11 +2,7 @@
     box-sizing: border-box;
 }
 
-.content > h1 {
-    margin: 5px 0;
-}
-
-.parent {
+.temperature-conversion-parent {
     width: 100vw;
     height: 100vh;
     display: table-cell;
@@ -14,43 +10,48 @@
     background-color: #808080;
 }
 
-.content {
+.temperature-conversion-content {
     margin: 0 auto;
-    max-width: 400px;   
+    max-width: 400px;
     background-color: #FEEED5;
     border: #000 solid 1px;
     padding: 5px 15px;
 }
 
-div.form-text {
-    display: block;    
+.temperature-conversion-content > h1 {
+    margin: 5px 0;
 }
 
-.form-text > div {
+.temperature-conversion-form-text > div {
     margin: 10px 0;
 }
 
-.incoming-temperature-field{
-    text-align:right;
+.celsius-temperature-field {
     width: 220px;
 }
 
 .temperature-conversion-form > * {
     display: inline-block;
     vertical-align: top;
-    margin: 5px 0;    
+    margin: 5px 0;
 }
 
-.temperature-conversion-form > div:first-of-type{
+.temperature-conversion-form-field {
     height: 35px;
 }
 
-.btn {
+button:hover {
+    background-color: #0094FF;
+    border: 2px solid #000;
+}
+
+.temperature-conversion-form-button {
     background-color: #388DB2;
+    cursor: pointer;
 }
 
 .error-message {
-    color: #f00;
+    color: #F00;
     display: none;
 }
 
@@ -59,5 +60,5 @@ div.form-text {
 }
 
 .invalid {
-    border: #f00 solid 1px;
+    border: #F00 solid 1px;
 }
