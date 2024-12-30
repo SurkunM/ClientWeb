@@ -9,35 +9,37 @@
 <body>
     <div class="content">
         <form class="form_body" action="/test" method="post">
-            <div class="title">
-                <h1>Отправить заявку</h1>
+            <h1 class="title">Отправить заявку</h1>
+
+            <div class="form_text">
+                <label>
+                    Ваше имя <input type="text" name="name" placeholder="Ваше имя *">
+                </label>
             </div>
 
             <div class="form_text">
-                <label>Ваше имя</label>
-                <input type="text" name="Name" placeholder="Ваше имя *">
+                <label>
+                    Ваш номер телефона <input type="tel" name="Phone" placeholder="Ваш номер телефона *">
+                </label>
             </div>
 
             <div class="form_text">
-                <label>Ваш номер телефона</label>
-                <input type="tel" name="Phone" placeholder="Ваш номер телефона *">
+                <label>
+                    Ваш email или VK <input type="email" name="Email" placeholder="Ваш email или VK *">
+                </label>
             </div>
 
             <div class="form_text">
-                <label>Ваш email или VK</label>
-                <input type="email" name="Email" placeholder="Ваш email или VK *">
-            </div>
-
-            <div class="form_text">
-                <label>Комментарий</label>
-                <textarea placeholder="Комментарий (не обязательно)"></textarea>
+                <label>
+                    Комментарий <textarea placeholder="Комментарий (не обязательно)"></textarea>
+                </label>
             </div>
 
             <div class="text">
-                <label>Заполните и отправьте форму, и мы перезвоним Вам по указанному номеру</label>
+                Заполните и отправьте форму, и мы перезвоним Вам по указанному номеру
             </div>
 
-            <input type="button" class="btn" value="Отправить заявку">
+            <input type="button" class="form_button" value="Отправить заявку">
         </form>
     </div>
 </body>
