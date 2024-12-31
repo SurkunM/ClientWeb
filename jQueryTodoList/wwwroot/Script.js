@@ -21,8 +21,10 @@
             newTodoItem.html(`
                 <div>
                     <span class="todo-text"></span>
-                    <button class="edit-button todo-form-button" type="button">Редактировать</button>
-                    <button class="delete-button todo-form-button" type="button">Удалить</button>
+                    <div class="todo-list-buttons">
+                        <button class="edit-button todo-form-button" type="button">Редактировать</button>
+                        <button class="delete-button todo-form-button" type="button">Удалить</button>
+                    </div>
                 </div>
             `);
 
@@ -34,12 +36,14 @@
 
             newTodoItem.find(".edit-button").click(function () {
                 newTodoItem.html(`
-                    <div>
+                    <form id="edit-todo-form">
                         <input class="edit-todo-text-field" type="text">
-                        <button class="save-button todo-form-button" type="button">Сохранить</button>
-                        <button class="cancel-button todo-form-button" type="button">Отмена</button>
-                    <div class="error-message">Необходимо задать значение</div>
-                    </div>
+                        <div class="todo-list-buttons">
+                            <button class="todo-form-button" type="submit">Сохранить</button>
+                            <button class="cancel-button todo-form-button" type="button">Отмена</button>
+                        </div>
+                        <div class="error-message">Необходимо задать значение</div>
+                    </form>
                 `);
 
                 const editTodoTextField = newTodoItem.find(".edit-todo-text-field");
@@ -49,17 +53,8 @@
                     setViewMode();
                 });
 
-                newTodoItem.find(".save-button").click(function () {
-                    saveEditedTodoText();
-                });
-
-                editTodoTextField.keydown(function (e) {
-                    if (e.code === "Enter") {
-                        saveEditedTodoText();
-                    }
-                });
-
-                function saveEditedTodoText() {
+                newTodoItem.submit(function (e) {
+                    e.preventDefault();
                     const editedTodoText = editTodoTextField.val().trim();
 
                     if (editedTodoText.length === 0) {
@@ -69,7 +64,7 @@
 
                     newTodoText = editedTodoText;
                     setViewMode();
-                }
+                });
             });
         }
 
