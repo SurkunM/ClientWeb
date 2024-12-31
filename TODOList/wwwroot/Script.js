@@ -36,7 +36,7 @@
 
             newTodoItem.querySelector(".edit-button").addEventListener("click", function () {
                 newTodoItem.innerHTML = `
-                    <form id="edit-todo-form">
+                    <form>
                         <input class="edit-todo-text-field" type="text"> 
                         <div class="todo-list-buttons">
                             <button class="todo-form-button" type="submit">Сохранить</button>
@@ -46,16 +46,14 @@
                     </form>
                 `;
 
-                const editTodoForm = document.getElementById("edit-todo-form");
-
-                const editTodoTextField = editTodoForm.querySelector(".edit-todo-text-field");
+                const editTodoTextField = newTodoItem.querySelector(".edit-todo-text-field");
                 editTodoTextField.value = newTodoText;
 
-                editTodoForm.querySelector(".cancel-button").addEventListener("click", function () {
+                newTodoItem.querySelector(".cancel-button").addEventListener("click", function () {
                     setViewMode();
                 });
 
-                editTodoForm.addEventListener("submit", function (e) {
+                newTodoItem.addEventListener("submit", function (e) {
                     e.preventDefault();
 
                     const editedTodoText = editTodoTextField.value.trim();
