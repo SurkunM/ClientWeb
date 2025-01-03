@@ -1,54 +1,35 @@
-﻿.container-fluid  {
-    height:100vh;
-    color: #FFF;
+﻿.container {
+    height: 100vh;
+/*    color: #FFF;
+    color: #FFF;*/
 }
+
+.phone-book-form{
+    max-width:350px;
+}
+.error-message {
+    display: none;
+    color: #F00;
+    font-size: 14px;
+}
+
+.is-invalid ~ .error-message {
+    display: block;
+}
+
+
 /*
-.phone-book-content {
-    max-width: 100%;
-    margin: 0 auto; 
-    text-align:center;
-    
-}
-
-.phone-book-form {
-    margin-bottom: 25px;
-}
-
-.phone-book-text-field {
-    width: 200px;
-}
-
-.phone-book-table {     
-    max-width: 100%;
-    margin: 0 auto;
-    border-collapse: collapse;
-    border: 1px solid #CECFD0;
-    background-color: #3698DB;
-}
-
-.phone-book-form > div {
-    display: inline-block;
-    vertical-align: top;
-}
-
-
-.phone-book-table-head > th {
-    border: #000 solid 2px;
-    padding: 5px 10px;
-    width: 100px;
-}
-
-.phone-book-table-head > .phone-book-data {
-    width: 200px;
-    text-align: left;
-}
-
 .phone-book-table td{
     border: 1px solid #CECFD0;
 }
+*/
+/*
 
-.error-message {
-    font-size: 14px;
-    display: none;
-    color:#F00;
-}*/
+.invalid {
+    border: #F00 solid 1px;
+    outline: #F00 solid 1px;
+}
+
+    .invalid ~ .new-todo-form .label {
+        color: #F00;
+    }*/

@@ -4,63 +4,68 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Phone Book</title>
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="node_modules/jquery-ui-dist/jquery-ui.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="node_modules/jquery/dist/jquery.min.js" defer></script>
     <script src="node_modules/jquery-ui-dist/jquery-ui.min.js" defer></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js" defer></script>
 </head>
-<body>
-    <div class="container-fluid" style="background-color: #062e24" >        
-            <div >
-                <h1>PhoneBook</h1>
-                <form class="row row-cols-lg-auto g-3 aligan-items-center" id="phone-book-form">
-                    <label class="label" for="phone-book-text-field">Введите данные контакта</label>
-
-                    <div>
-                        <input class="phone-book-text-field" id="phone-book-text-first-name" type="text">
-                        <input class="phone-book-text-field" id="phone-book-text-secontd-field" type="text">
-                        <input class="phone-book-text-field" id="phone-book-text-field-tel" type="tel">
-                        <div class="error-message">Необходимо задать значение</div>
-                    </div>
-
-                    <button class="btn btn-primary" type="submit">Сохранить</button>
-                </form>
+<body style="background-color: #F1F1F1">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="d-flex justify-content-center m-3">
+                <h1>Phone Book</h1>
             </div>
+            <form class="phone-book-form row mb-3" id="phone-book-form">
+                <div class="d-flex justify-content-center mb-2">Введите данные контакта</div>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                </tbody>
-            </table>
-        
+                <div class="mb-2">
+                    <input class="phone-book-text-field form-control" id="phone-book-text-last-name-field" type="text" placeholder="Фамилия" autocomplete="off">
+                    <div class="error-message" id="last-name-error-message">Заполниие поле Фамилия</div>
+                </div>
+                <div class="mb-2">
+                    <input class="phone-book-text-field form-control " id="phone-book-text-first-name-field" type="text" placeholder="Имя" autocomplete="off">
+                    <div class="error-message" id="first-name-error-message">Заполниие поле Имя</div>
+                </div>
 
+                <div class="mb-2">
+                    <input class="phone-book-text-field form-control" id="phone-book-text-tel-field" type="tel" placeholder="Номер телефона" autocomplete="off">
+                    <div class="error-message" id="tel-error-message"></div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button class="ui-button ui-widget ui-corner-all" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+
+        <table class="phone-book-table table table-bordered" id="phone-book-table">
+            <thead>
+                <tr class="phone-book-table-title">
+                    <th class="col"><input type="checkbox" id="phone-book-table-selected-all-checkbox" name="1"></th>
+                    <th class="col">№</th>
+                    <th class="col-3">Фамилия</th>
+                    <th class="col-3">Имя</th>
+                    <th class="col-3">Номер телефона</th>
+                    <th class="col-2">
+                        <div class="d-flex justify-content-center">
+                            <button class="ui-button ui-widget ui-corner-all small" id="all-delete-button" style="display:none">Удалить все</button>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="phone-book-tbody">
+            </tbody>
+        </table>
+
+        <div id="confirm-all-delete-dialog" title="Подтвердите удаление" style="display:none">           
+            <p id="confirm-all-delete-dialog-text"></p>
+        </div>
+        <div id="confirm-single-delete-dialog" title="Подтвердите удаление" style="display:none">
+            <p>Удалить запсь?</p>
+        </div>
     </div>
 </body>
 </html>
