@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\node_modules\lodash\**" />
+    <EmbeddedResource Remove="wwwroot\node_modules\lodash\**" />
+    <None Remove="wwwroot\node_modules\lodash\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="wwwroot\html.html" />
     <Content Include="wwwroot\node_modules\%40popperjs\core\package.json" />
     <Content Include="wwwroot\node_modules\.package-lock.json" />

@@ -15,11 +15,11 @@
 <body style="background-color: #F1F1F1">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="d-flex justify-content-center m-3">
+            <div class="d-flex justify-content-center m-1">
                 <h1>Phone Book</h1>
             </div>
             <form class="phone-book-form row mb-3" id="phone-book-form">
-                <div class="d-flex justify-content-center mb-2">Введите данные контакта</div>
+                <div class="current-form-action-text d-flex justify-content-center mb-1">Создание нового контакта</div>
 
                 <div class="mb-2">
                     <input class="phone-book-text-field form-control" id="phone-book-text-last-name-field" type="text" placeholder="Фамилия" autocomplete="off">
@@ -35,23 +35,33 @@
                     <div class="error-message" id="tel-error-message"></div>
                 </div>
 
-                <div class="d-flex justify-content-end">
-                    <button class="ui-button ui-widget ui-corner-all" type="submit">Сохранить</button>
+                <div class="phone-book-form-buttons d-flex justify-content-end">
+                    <button class="new-contact-add-button ui-button ui-widget ui-corner-all" type="submit">Добавить</button>
                 </div>
             </form>
+        </div>
+
+        <div class="input-group mb-2">
+            <input type="text" class="form-control" placeholder="Введите данные контакта" id="phone-book-search-field">
+            <button class="btn btn-outline-secondary" id="phone-book-search-button" type="button">Найти</button>
+            <button class="btn btn-outline-secondary" id="phone-book-clear-button" type="button">Сбросить</button>
         </div>
 
         <table class="phone-book-table table table-bordered" id="phone-book-table">
             <thead>
                 <tr class="phone-book-table-title">
-                    <th class="col"><input type="checkbox" id="phone-book-table-selected-all-checkbox" name="1"></th>
+                    <th class="col">
+                        <label class="d-flex justify-content-sm-center">
+                            <input class="form-check-input" type="checkbox" id="phone-book-table-selected-all-checkbox">
+                        </label>
+                    </th>
                     <th class="col">№</th>
                     <th class="col-3">Фамилия</th>
                     <th class="col-3">Имя</th>
                     <th class="col-3">Номер телефона</th>
                     <th class="col-2">
                         <div class="d-flex justify-content-center">
-                            <button class="ui-button ui-widget ui-corner-all small" id="all-delete-button" style="display:none">Удалить все</button>
+                            <button class="ui-button ui-widget ui-corner-all small" id="all-delete-button">Удалить все</button>
                         </div>
                     </th>
                 </tr>
@@ -60,7 +70,7 @@
             </tbody>
         </table>
 
-        <div id="confirm-all-delete-dialog" title="Подтвердите удаление" style="display:none">           
+        <div id="confirm-all-delete-dialog" title="Подтвердите удаление" style="display:none">
             <p id="confirm-all-delete-dialog-text"></p>
         </div>
         <div id="confirm-single-delete-dialog" title="Подтвердите удаление" style="display:none">

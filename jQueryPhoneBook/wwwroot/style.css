@@ -1,7 +1,5 @@
 ﻿.container {
     height: 100vh;
-/*    color: #FFF;
-    color: #FFF;*/
 }
 
 .phone-book-form{
@@ -16,20 +14,3 @@
 .is-invalid ~ .error-message {
     display: block;
 }
-
-
-/*
-.phone-book-table td{
-    border: 1px solid #CECFD0;
-}
-*/
-/*
-
-.invalid {
-    border: #F00 solid 1px;
-    outline: #F00 solid 1px;
-}
-
-    .invalid ~ .new-todo-form .label {
-        color: #F00;
-    }*/
