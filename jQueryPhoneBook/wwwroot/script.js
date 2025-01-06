@@ -1,4 +1,6 @@
 ﻿$(document).ready(function () {
+    "use strict";
+
     const phoneBookForm = $("#phone-book-form");
     const phoneBookTBody = $("#phone-book-tbody");
 
