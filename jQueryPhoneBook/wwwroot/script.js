@@ -105,8 +105,10 @@
 
     phoneBookForm.submit(function (e) {
         e.preventDefault();
+
         function checkFormFieldsValid() {
             let isValidFormFields = true;
+            
             $(".phone-book-text-field").each((i, element) => {
 
                 if ($(element).val().trim().length === 0) {
