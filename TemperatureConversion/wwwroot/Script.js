@@ -1,4 +1,6 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
+    "use strict";
+
     const celsiusTemperatureField = document.getElementById("celsius-temperature-field");
     const temperatureConversionForm = document.getElementById("temperature-conversion-form");
     const kelvinConversionResultLabel = document.getElementById("kelvin-conversion-result");
@@ -13,7 +15,6 @@
 
         if (celsiusTemperatureText.length === 0) {
             addInvalidClass();
-
             return;
         }
 
@@ -21,7 +22,6 @@
 
         if (isNaN(celsiusTemperature)) {
             addInvalidClass();
-
             return;
         }
 

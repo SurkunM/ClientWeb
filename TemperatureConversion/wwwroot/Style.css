@@ -40,7 +40,7 @@
     height: 35px;
 }
 
-button:hover {
+.temperature-conversion-form-button:hover {
     background-color: #0094FF;
     border: 2px solid #000;
 }
