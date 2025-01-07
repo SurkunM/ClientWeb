@@ -1,4 +1,6 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
+    "use strict";
+
     const todoList = document.getElementById("todo-list");
     const newTodoTextField = document.getElementById("new-todo-text-field");
     const newTodoForm = document.getElementById("new-todo-form");
@@ -19,7 +21,7 @@
 
         function setViewMode() {
             newTodoItem.innerHTML = `
-                <div>
+                <div class="clearfix">
                     <span class="todo-text"></span>
                     <div class="todo-list-buttons">
                         <button class="edit-button todo-form-button" type="button">Редактировать</button>
@@ -36,13 +38,15 @@
 
             newTodoItem.querySelector(".edit-button").addEventListener("click", function () {
                 newTodoItem.innerHTML = `
-                    <form>
-                        <input class="edit-todo-text-field" type="text"> 
-                        <div class="todo-list-buttons">
-                            <button class="todo-form-button" type="submit">Сохранить</button>
-                            <button class="cancel-button todo-form-button" type="button">Отмена</button>
+                    <form class="edit-button-form">
+                        <div class="clearfix">
+                            <input class="edit-todo-text-field" type="text"> 
+                            <div class="todo-list-buttons">
+                                <button class="todo-form-button" type="submit">Сохранить</button>
+                                <button class="cancel-button todo-form-button" type="button">Отмена</button>
+                            </div>
+                            <div class="error-message">Необходимо задать значение</div>
                         </div>
-                        <div class="error-message">Необходимо задать значение</div>
                     </form>
                 `;
 
@@ -53,7 +57,7 @@
                     setViewMode();
                 });
 
-                newTodoItem.addEventListener("submit", function (e) {
+                newTodoItem.querySelector(".edit-button-form").addEventListener("submit", function (e) {
                     e.preventDefault();
 
                     const editedTodoText = editTodoTextField.value.trim();
