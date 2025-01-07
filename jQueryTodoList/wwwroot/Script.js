@@ -1,4 +1,6 @@
 ﻿$(document).ready(function () {
+    "use strict";
+
     const todoList = $("#todo-list");
     const newTodoTextField = $("#new-todo-text-field");
     const newTodoForm = $("#new-todo-form");
@@ -19,7 +21,7 @@
 
         function setViewMode() {
             newTodoItem.html(`
-                <div>
+                <div class="clearfix">
                     <span class="todo-text"></span>
                     <div class="todo-list-buttons">
                         <button class="edit-button todo-form-button" type="button">Редактировать</button>
@@ -36,13 +38,15 @@
 
             newTodoItem.find(".edit-button").click(function () {
                 newTodoItem.html(`
-                    <form id="edit-todo-form">
-                        <input class="edit-todo-text-field" type="text">
-                        <div class="todo-list-buttons">
-                            <button class="todo-form-button" type="submit">Сохранить</button>
-                            <button class="cancel-button todo-form-button" type="button">Отмена</button>
+                    <form class="edit-todo-form">
+                        <div class="clearfix">
+                            <input class="edit-todo-text-field" type="text">
+                            <div class="todo-list-buttons">
+                                <button class="todo-form-button" type="submit">Сохранить</button>
+                                <button class="cancel-button todo-form-button" type="button">Отмена</button>
+                            </div>
+                            <div class="error-message">Необходимо задать значение</div>
                         </div>
-                        <div class="error-message">Необходимо задать значение</div>
                     </form>
                 `);
 
@@ -53,8 +57,9 @@
                     setViewMode();
                 });
 
-                newTodoItem.submit(function (e) {
+                newTodoItem.find(".edit-todo-form").submit(function (e) {
                     e.preventDefault();
+
                     const editedTodoText = editTodoTextField.val().trim();
 
                     if (editedTodoText.length === 0) {

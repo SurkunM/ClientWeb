@@ -6,7 +6,7 @@
     height: 100vh;
     padding: 50px;
     background-color: #FFF;
-    border: #009C86 solid 25px;
+    border: #009C86 solid 5px;
     font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
     color: #676565;
 }
@@ -26,6 +26,7 @@
     display: inline-block;
     vertical-align: top;
     padding: 5px;
+    margin-bottom: 5px;
 }
 
 .new-todo-form .label {
@@ -33,16 +34,21 @@
 }
 
 .new-todo-text-field {
-    width: 272px;
+    width: 375px;
 }
 
 .todo-list {
     padding: 0;
-    margin-left: 5px;
+    margin: 0 5px;
+    list-style-type: none;
 }
 
 .todo-list > li + li {
     margin-top: 10px;
+}
+
+.todo-form-button:hover {
+    background-color: #2DAEE6;
 }
 
 .todo-form-button {
@@ -51,6 +57,7 @@
     border: none;
     padding: 3px 10px;
     margin-top: 5px;
+    cursor: pointer;
 }
 
 .error-message {
@@ -76,5 +83,34 @@
 }
 
 .edit-todo-text-field {
-    width: 200px;
+    width: 295px;
+}
+
+.delete-button:hover {
+    background-color: #FA5959;
+}
+
+.delete-button {
+    background-color: #F00;
+}
+
+.todo-text {
+    clear: both;
+    vertical-align: middle;
+}
+
+.todo-list-buttons {
+    float: right;
+    display: inline;
+    vertical-align: middle;
+}
+
+.todo-list-buttons > button {
+    margin-top: 0;
+}
+
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
 }
