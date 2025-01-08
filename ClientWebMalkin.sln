@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jQueryPhoneBook", "jQueryPh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VueTodoList", "VueTodoList\VueTodoList.csproj", "{4101B0BD-59FB-47B6-B812-88E904059F68}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VuePhoneBook", "VuePhoneBook\VuePhoneBook.csproj", "{D6EDC09D-0AD6-4906-92D7-D31F8BC836C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{4101B0BD-59FB-47B6-B812-88E904059F68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4101B0BD-59FB-47B6-B812-88E904059F68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4101B0BD-59FB-47B6-B812-88E904059F68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6EDC09D-0AD6-4906-92D7-D31F8BC836C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6EDC09D-0AD6-4906-92D7-D31F8BC836C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6EDC09D-0AD6-4906-92D7-D31F8BC836C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6EDC09D-0AD6-4906-92D7-D31F8BC836C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
