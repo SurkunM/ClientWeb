@@ -108,7 +108,7 @@ const app = Vue.createApp({
             }
 
             if (phone.length === 0) {
-                this.phoneInvalidText = "Заполниие поле Телефон";
+                this.phoneInvalidText = "Заполните поле Телефон";
                 this.isNewContactPhoneFieldValid = true;
                 return true;
             }
