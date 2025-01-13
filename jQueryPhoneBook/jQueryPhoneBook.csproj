@@ -55,7 +55,6 @@
     <Content Include="wwwroot\node_modules\jquery\LICENSE.txt" />
     <Content Include="wwwroot\node_modules\jquery\package.json" />
     <Content Include="wwwroot\script.js" />
-    <Content Include="wwwroot\style.css" />
   </ItemGroup>
 
   <ItemGroup>

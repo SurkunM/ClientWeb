@@ -1,25 +1,26 @@
-﻿$(document).ready(function () {
-    "use strict";
+﻿"use strict";
 
+let contacts = [];
+
+$(document).ready(function () {
     const phoneBookForm = $("#phone-book-form");
     const phoneBookTBody = $("#phone-book-tbody");
 
-    const confirmSingleDeleteDialog = $("#confirm-single-delete-dialog");
-    const confirmAllDeleteDialog = $("#confirm-all-delete-dialog");
-
-    const contactLastNameField = $("#phone-book-text-last-name-field");
     const contactFirstNameField = $("#phone-book-text-first-name-field");
-    const contactTelField = $("#phone-book-text-tel-field");
+    const contactLastNameField = $("#phone-book-text-last-name-field");
+    const contactPhoneField = $("#phone-book-text-phone-field");
+
+    const confirmSingleDeleteDialog = $("#confirm-single-delete-dialog");
+    const confirmAllSelectedDeleteDialog = $("#confirm-all-selected-delete-dialog");
 
     const searchField = $("#phone-book-search-field");
-    const searchFieldSearchButton = $("#phone-book-search-button");
-    const searchFieldClearButton = $("#phone-book-clear-button");
+    const searchResultText = $("#phone-book-search-result-text");
+    const searchForm = $("#phone-book-search-form");
 
     const selectAllItemsCheckbox = $("#phone-book-table-selected-all-checkbox");
-    const allDeleteButton = $("#all-delete-button");
 
-    let contactSequenceNumber = 0;
     let isSearchModeActive = false;
+    let itemIndex = 0;
 
     phoneBookForm.change(function (e) {
         const field = $(e.target);
@@ -28,72 +29,86 @@
         field.toggleClass("is-valid", field.val().trim().length > 0);
     });
 
-    function getSearchItemFields(fields, searchText) {
-        fields.each((i, e) => {
-            if ($(e).text().toLocaleLowerCase().indexOf(searchText.toLocaleLowerCase()) >= 0) {
-                $(e).closest("tr").show();
-            }
-        });
-    }
+    searchForm.submit(function (e) {
+        e.preventDefault();
 
-    searchFieldSearchButton.click(function () {
+        const searchText = searchField.val().trim().toLocaleLowerCase();
+
+        if (searchText.length === 0) {            
+            return;
+        }
+
         isSearchModeActive = true;
-        const searchText = searchField.val().trim();
+        let findItemsCount = 0;
 
-        phoneBookTBody.find("tr").each((i, e) => {
-            $(e).hide();
-        });
+        phoneBookTBody.find("tr")
+            .filter((i, e) => $(e).is(":visible"))
+            .each((i, e) => $(e).hide());
 
         selectAllItemsCheckbox.triggerHandler("change");
 
-        getSearchItemFields(phoneBookTBody.find(".contact-last-name"), searchText);
-        getSearchItemFields(phoneBookTBody.find(".contact-first-name"), searchText);
-        getSearchItemFields(phoneBookTBody.find(".contact-tel"), searchText);
+        contacts
+            .filter(c => c.firstNameElement.text().toLocaleLowerCase().indexOf(searchText) >= 0 ||
+                c.lastNameElement.text().toLocaleLowerCase().indexOf(searchText) >= 0 ||
+                c.phoneElement.text().toLocaleLowerCase().indexOf(searchText) >= 0)
+            .forEach(c => {
+                c.idElement.closest("tr").show();
+                findItemsCount++;
+            });
+
+
+        searchResultText.text(`Найдено: ${findItemsCount}`);
     });
 
-    searchFieldClearButton.click(function () {
-        phoneBookTBody.find("tr").each((i, e) => {
-            $(e).show();
-        });
+    $("#phone-book-clear-button").click(function () {
+        contacts
+            .filter(c => c.idElement.is(":hidden"))
+            .forEach(c => c.idElement.closest("tr").show());
 
         isSearchModeActive = false;
+        searchResultText.text("");
         searchField.val("")
     });
 
 
     selectAllItemsCheckbox.change(function () {
-        phoneBookTBody.find(".new-phone-book-item-checkbox").each((i, e) => {
-            if ($(this).prop("checked") && $(e).is(":visible")) {
-                $(e).prop("checked", true);
+        contacts.forEach(c => {
+            if ($(this).prop("checked") && c.idElement.is(":visible")) {
+                $(c.isCheckedElement).prop("checked", true);
             }
             else {
-                $(e).prop("checked", false);
+                $(c.isCheckedElement).prop("checked", false);
             }
-        }).last().trigger("change");
+        });
     });
 
-    allDeleteButton.click(function () {
-        const checkedItems = phoneBookTBody.find(":checked");
-        const checkedItemsCountText = confirmAllDeleteDialog.find("#confirm-all-delete-dialog-text");
-        checkedItemsCountText.text(`Удалить ${checkedItems.length} записей?`);
+    $("#all-selected-delete-button").click(function () {
+        const checkedItemsCount = phoneBookTBody.find(":checked").length;
 
-        (confirmAllDeleteDialog).dialog({
+        const checkedItemsCountText = confirmAllSelectedDeleteDialog.find("#confirm-all-selected-delete-dialog-text");
+        checkedItemsCountText.text(`Удалить ${checkedItemsCount} записей?`);
+
+        (confirmAllSelectedDeleteDialog).dialog({
             resizable: false,
             modal: true,
             buttons: {
                 "Да": function () {
-                    checkedItems.each((i, e) => {
-                        $(e).closest("tr").remove();
-                        contactSequenceNumber--;
+                    contacts
+                        .filter(c => c.isCheckedElement.prop("checked"))
+                        .forEach(c => {
+                            c.idElement.closest("tr").remove();
+                            itemIndex--;
+                        });
+
+                    contacts = contacts.filter(c => !c.isCheckedElement.prop("checked"));
+
+                    contacts.forEach((c, i) => {
+                        c.idElement.text(++i);
                     });
 
-                    $(".sequence-number").each((i, e) => {
-                        if (i === contactSequenceNumber) {
-                            return;
-                        }
-
-                        $(e).text(++i);
-                    });
+                    if (isSearchModeActive) {
+                        searchForm.triggerHandler("submit");
+                    }
 
                     selectAllItemsCheckbox.prop("checked", false);
                     $(this).dialog("close");
@@ -109,51 +124,48 @@
         e.preventDefault();
 
         function checkFormFieldsValid() {
-            let isValidFormFields = true;
-            
-            $(".phone-book-text-field").each((i, element) => {
+            const phoneFieldErrorMessage = $("#phone-error-message").text("");
 
-                if ($(element).val().trim().length === 0) {
-                    $(element).addClass("is-invalid");
+            if (contactFirstNameField.val().trim().length === 0) {
+                $(contactFirstNameField).addClass("is-invalid");
+                return false;
+            }
 
-                    isValidFormFields = false;
-                }
+            if (contactLastNameField.val().trim().length === 0) {
+                $(contactLastNameField).addClass("is-invalid");
+                return false;
+            }
 
-                if (element.id === "phone-book-text-tel-field") {
-                    const telFieldErrorMessage = $("#tel-error-message").text("");
-                    const contactNumberText = contactTelField.val().trim();
+            if (contactPhoneField.val().trim().length === 0) {
+                phoneFieldErrorMessage.text("Заполните поле номер телефона");
+                $(contactPhoneField).addClass("is-invalid");
+                return false;
+            }
 
-                    if (isNaN(Number(contactNumberText))) {
-                        contactTelField.addClass("is-invalid");
-                        isValidFormFields = false;
+            if (isNaN(Number(contactPhoneField.val().trim()))) {
+                phoneFieldErrorMessage.text("Не верный формат номера телефона");
+                contactPhoneField.addClass("is-invalid");
+                return false;
+            }
 
-                        telFieldErrorMessage.text("Не верный формат номера телефона");
-                    }
-                    else if (!isValidFormFields) {
-                        telFieldErrorMessage.text("Заполните поле номер телефона");
-                    }
-                    else {
-                        phoneBookTBody.find(".contact-tel").each((i, e) => {
-                            if ($(e).text() === contactNumberText) {
-                                contactTelField.addClass("is-invalid");
-                                isValidFormFields = false;
-
-                                telFieldErrorMessage.text("Номер уже существует");
-                            }
-                        });
-                    }
-                }
-            });
-
-            return isValidFormFields
+            return true;
         }
 
-        if (!checkFormFieldsValid()) {
+        function checkExistPhone(index, contactPhoneText) {
+            if (contacts.some(c => c.phoneElement.text() === contactPhoneText && c.idElement.text() !== index)) {
+                contactPhoneField.addClass("is-invalid");
+                $("#phone-error-message").text("Номер уже существует");
+                return false;
+            }
+
+            return true;
+        }
+
+        if (!checkFormFieldsValid() || !checkExistPhone(itemIndex, contactPhoneField.val().trim())) {
             return
         }
 
         const newPhoneBookItem = $("<tr>").addClass(".new-phone-book-item");
-        contactSequenceNumber++;
 
         if (isSearchModeActive) {
             newPhoneBookItem.hide();
@@ -166,22 +178,34 @@
                             <input class="new-phone-book-item-checkbox form-check-input" type="checkbox">
                         </label>
                     </td>
-                    <td class="sequence-number"></td>
+                    <td class="contact-index"></td>
                     <td class="contact-last-name"></td>
                     <td class="contact-first-name"></td>
-                    <td class="contact-tel"></td>
-                    <td class="d-flex justify-content-center">                        
+                    <td class="contact-phone"></td>
+                    <td>                        
                         <button class="edit-button ui-button ui-widget ui-corner-all" type="button" title="Button with icon only"><span class="ui-icon ui-icon-pencil">У</span></button>
                         <button class="delete-button ui-button ui-widget ui-corner-all" type="button" title="Button with icon only"><span class="ui-icon ui-icon-trash"></span></button>                       
-                    </td>            
+                    </td>                     
             `);
 
-            newPhoneBookItem.find(".sequence-number").text(contactSequenceNumber);
-            newPhoneBookItem.find(".contact-last-name").text(contactLastNameField.val().trim());
-            newPhoneBookItem.find(".contact-first-name").text(contactFirstNameField.val().trim());
-            newPhoneBookItem.find(".contact-tel").text(contactTelField.val().trim());
+            contacts.push({
+                idElement: newPhoneBookItem.find(".contact-index"),
+                isCheckedElement: newPhoneBookItem.find(".new-phone-book-item-checkbox"),
 
-            newPhoneBookItem.find(".new-phone-book-item-checkbox").change(function () {
+                firstNameElement: newPhoneBookItem.find(".contact-first-name"),
+                lastNameElement: newPhoneBookItem.find(".contact-last-name"),
+                phoneElement: newPhoneBookItem.find(".contact-phone")
+            });
+
+            const contact = contacts[contacts.length - 1];
+            itemIndex++;
+
+            contact.idElement.text(itemIndex);
+            contact.firstNameElement.text(contactFirstNameField.val().trim());
+            contact.lastNameElement.text(contactLastNameField.val().trim());
+            contact.phoneElement.text(contactPhoneField.val().trim());
+
+            contact.isCheckedElement.change(function () {
                 if (!$(this).prop("checked")) {
                     selectAllItemsCheckbox.prop("checked", false);
                 }
@@ -193,18 +217,21 @@
                     modal: true,
                     buttons: {
                         "Да": function () {
-                            newPhoneBookItem.remove()
-                            contactSequenceNumber--;
-                            $(".sequence-number").each((i, e) => {
-                                if (i === contactSequenceNumber) {
-                                    return;
-                                }
+                            contacts.splice(Number(contact.idElement.text()) - 1, 1);
+                            newPhoneBookItem.remove();
 
-                                $(e).text(++i);
+                            contacts.forEach((c, i) => {
+                                c.idElement.text(++i);
                             });
 
-                            if (contactSequenceNumber === 0) {
+                            itemIndex--;
+
+                            if (itemIndex === 0) {
                                 selectAllItemsCheckbox.prop("checked", false);
+                            }
+
+                            if (isSearchModeActive) {
+                                searchForm.triggerHandler("submit");
                             }
 
                             $(this).dialog("close");
@@ -217,36 +244,43 @@
             })
 
             newPhoneBookItem.find(".edit-button").click(function (e) {
-                const editButton = $(this).prop("disabled", true);
-                const phoneBookButtons = phoneBookForm.find(".phone-book-form-buttons ");
+                const editButton = $(this);
+                const deleteButton = newPhoneBookItem.find(".delete-button");
 
-                const newContactLastName = newPhoneBookItem.find(".contact-last-name");
-                const newContactFirstName = newPhoneBookItem.find(".contact-first-name");
-                const newContactTel = newPhoneBookItem.find(".contact-tel");
+                editButton.hide();
+                deleteButton.hide();
 
-                phoneBookForm.find(".current-form-action-text ").text("Редактирование контакта");
-                phoneBookForm.find(".new-contact-add-button").hide();
+                const phoneBookButtons = phoneBookForm.find(".phone-book-form-buttons");
+
+                const formCurrentActionText = phoneBookForm.find(".current-form-action-text");
+                formCurrentActionText.text("Редактирование контакта");
+
+                const contactAddButton = phoneBookForm.find(".new-contact-add-button");
+                contactAddButton.hide();
 
                 $("<button>")
                     .addClass("save-button ui-button ui-widget ui-corner-all")
                     .prop("type", "button").text("Сохранить")
                     .appendTo(phoneBookButtons)
                     .click(function () {
-                        if (checkFormFieldsValid()) {
-                            this.remove();
-                            phoneBookButtons.find(".cancel-button").remove()
-
-                            newContactLastName.text(contactLastNameField.val());
-                            newContactFirstName.text(contactFirstNameField.val());
-                            newContactTel.text(contactTelField.val());
-
-                            phoneBookForm.find(".current-form-action-text ").text("Создание нового контакта");
-                            phoneBookForm.find(".new-contact-add-button").show();
-
-                            clearFormFields();
-                            $(".phone-book-text-field").trigger("change");
-                            editButton.prop("disabled", false);
+                        if (!checkFormFieldsValid() || !checkExistPhone(contact.idElement.text(), contactPhoneField.val().trim())) {
+                            return;
                         }
+
+                        this.remove();
+                        phoneBookButtons.find(".cancel-button").remove()
+
+                        contact.firstNameElement.text(contactFirstNameField.val());
+                        contact.lastNameElement.text(contactLastNameField.val());
+                        contact.phoneElement.text(contactPhoneField.val());
+
+                        formCurrentActionText.text("Создание нового контакта");
+
+                        clearFormFields();
+
+                        contactAddButton.show();
+                        editButton.show();
+                        deleteButton.show();
                     });
 
                 $("<button>")
@@ -256,34 +290,29 @@
                     .click(function () {
                         this.remove();
                         phoneBookButtons.find(".save-button").remove()
-                        phoneBookForm.find(".current-form-action-text ").text("Создание нового контакта");
-                        phoneBookForm.find(".new-contact-add-button").show();
 
-                        newContactLastName.text(contactLastNameField.val());
-                        newContactFirstName.text(contactFirstNameField.val());
-                        newContactTel.text(contactTelField.val());
+                        formCurrentActionText.text("Создание нового контакта");
 
                         clearFormFields();
                         $(".phone-book-text-field").trigger("change");
-                        editButton.prop("disabled", false);
-                    });
 
-                contactLastNameField.val(newContactLastName.text());
-                contactFirstNameField.val(newContactFirstName.text());
-                contactTelField.val(newContactTel.text());
+                        contactAddButton.show();
+                        editButton.show();
+                        deleteButton.show();
+                    })
 
-                newContactLastName.text("")
-                newContactFirstName.text("")
-                newContactTel.text("")
+                contactLastNameField.val(contact.firstNameElement.text());
+                contactFirstNameField.val(contact.lastNameElement.text());
+                contactPhoneField.val(contact.phoneElement.text());
 
                 $(".phone-book-text-field").trigger("change");
             });
         }
 
         function clearFormFields() {
-            contactLastNameField.val("");
             contactFirstNameField.val("");
-            contactTelField.val("");
+            contactLastNameField.val("");
+            contactPhoneField.val("");
 
             $(".phone-book-text-field").removeClass("is-valid");
         }
