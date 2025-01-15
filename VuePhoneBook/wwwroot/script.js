@@ -217,8 +217,13 @@ const app = Vue.createApp({
         },
 
         getContactsSearch() {
-            this.isSearchModeActive = true;
             const searchText = this.searchFieldText.toLocaleLowerCase();            
+
+            if (searchText.length === 0) {
+                return;
+            }
+
+            this.isSearchModeActive = true;
 
             this.contacts.forEach(c => {
                 if (c.firstName.toLocaleLowerCase().indexOf(searchText) > -1 || c.lastName.toLocaleLowerCase().indexOf(searchText) > -1
