@@ -19,7 +19,7 @@
     max-width: 747px;
 }
 
-h1.title {
+.title {
     color: #636462;
     font-weight: normal;
     font-size: 28px;
@@ -32,20 +32,19 @@ h1.title {
     font-size: 17px;
 }
 
-.text_title label:first-child {
+.text_title span:first-child {
     color: #378DB2;
     font-weight: bold;
 }
 
-.context {
+.text {
     color: #636462;
 }
 
-.text>p {
-    color: #636462;
+.text > p {   
     text-indent: 15px;
     text-align: justify;
     line-height: 1.5em;
     padding: 5px 0;
-    margin: 0 0;
+    margin: 0;
 }
