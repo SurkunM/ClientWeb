@@ -33,19 +33,19 @@
     font-weight: bold;
 }
 
-.form_text > label :last-child {
+.form_text_field, .form_textarea_field {
     width: 100%;
     border: none;
     display: block;
     margin-top: 5px;
 }
 
-.form_text > label > input {
+.form_text_field {
     height: 33px;
     padding: 10px;
 }
 
-.form_text > label > textarea {
+.form_textarea_field {
     min-height: 110px;
     resize: vertical;
     padding: 10px;
