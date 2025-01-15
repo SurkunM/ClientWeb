@@ -23,7 +23,7 @@
     border: 1px solid #CECFD0;
 }
 
-.table > thead > tr > th {
+.table th {
     background-color: #3698DB;
     border: 1px solid #CECFD0;
     color: #FFF;
@@ -40,7 +40,7 @@
     background-color: #EEE;
 }
 
-.table > tbody td {
+.table td {
     border: 1px solid #CECFD0;
     padding: 14px 10px;
 }
