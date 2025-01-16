@@ -21,7 +21,7 @@
 
         function setViewMode() {
             newTodoItem.innerHTML = `
-                <div class="clearfix">
+                <div>
                     <span class="todo-text"></span>
                     <div class="todo-list-buttons">
                         <button class="edit-button todo-form-button" type="button">Редактировать</button>
@@ -39,7 +39,7 @@
             newTodoItem.querySelector(".edit-button").addEventListener("click", function () {
                 newTodoItem.innerHTML = `
                     <form class="edit-button-form">
-                        <div class="clearfix">
+                        <div>
                             <input class="edit-todo-text-field" type="text"> 
                             <div class="todo-list-buttons">
                                 <button class="todo-form-button" type="submit">Сохранить</button>
