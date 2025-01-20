@@ -1,6 +1,6 @@
 namespace VuePhoneBook;
 
-public class Program
+public class VuePhoneBookMain
 {
     public static void Main(string[] args)
     {

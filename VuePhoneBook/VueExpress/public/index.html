@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vue Phone Book</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="node_modules/vue/dist/vue.global.js" defer></script>
-    <script src="script.js" defer></script>
+    <script src="node_modules/axios/dist/axios.min.js" defer></script>
+    <script src="js/script.js" defer></script>
 </head>
 <body>
-    <div class="container" id="app">
+    <div v-cloak class="container" id="app">
         <div class="row justify-content-center">
             <div class="col-auto">
                 <h1 class="mt-3">Phone Book</h1>
@@ -21,40 +22,40 @@
         <form @submit.prevent="createContact" class="mt-2">
             <div class="row justify-content-center">
                 <div class="col-lg-3">
-                    <h2 v-text="formTitleText" class="h5 d-flex justify-content-center "></h2>
+                    <h2 v-text="formTitleText" class="h5 d-flex justify-content-center"></h2>
 
                     <div class="mb-1">
-                        <label for="first-name" class="form-label-sm">Имя</label>
-                        <input v-model.trim="newContactFirstName"
-                               v-bind:class="{ 'is-invalid': isNewContactFirstNameFieldValid, 'is-valid': isNewContactFirstNameFieldComplete}"
+                        <label for="first-name-field" class="form-label-sm">Имя</label>
+                        <input v-model.trim="firstName"
+                               v-bind:class="{'is-invalid': isFirstNameFieldValid, 'is-valid': isFirstNameFieldComplete}"
                                v-on:change="checkContactFirstNameFieldComplete"
                                type="text"
                                class="form-control form-control-sm"
-                               id="first-name"
+                               id="first-name-field"
                                autocomplete="off">
-                        <div class="invalid-feedback">Заполните поле Имя.</div>
+                        <div class="invalid-feedback">Заполните поле Имя</div>
                     </div>
 
                     <div class="mb-1">
-                        <label for="last-name" class="form-label-sm">Фамилия</label>
-                        <input v-model.trim="newContactLastName"
-                               v-bind:class="{ 'is-invalid': isNewContactLastNameFieldValid, 'is-valid':isNewContactLastNameFieldComplete }"
+                        <label for="last-name-field" class="form-label-sm">Фамилия</label>
+                        <input v-model.trim="lastName"
+                               v-bind:class="{'is-invalid': isLastNameFieldValid, 'is-valid':isLastNameFieldComplete}"
                                v-on:change="checkContactLastNameFieldComplete"
                                type="text"
                                class="form-control form-control-sm"
-                               id="last-name"
+                               id="last-name-field"
                                autocomplete="off">
-                        <div class="invalid-feedback">Заполните поле Фамилия.</div>
+                        <div class="invalid-feedback">Заполните поле Фамилия</div>
                     </div>
 
                     <div class="mb-2">
-                        <label for="phone" class="form-label-sm">Телефон</label>
-                        <input v-model.trim="newContactPhone"
-                               v-bind:class="{ 'is-invalid': isNewContactPhoneFieldValid, 'is-valid': isNewContactPhoneFieldComplete }"
+                        <label for="phone-field" class="form-label-sm">Телефон</label>
+                        <input v-model.trim="phone"
+                               v-bind:class="{'is-invalid': isPhoneFieldValid, 'is-valid': isPhoneFieldComplete}"
                                v-on:change="checkContactPhoneFieldComplete"
                                type="text"
                                class="form-control form-control-sm"
-                               id="phone"
+                               id="phone-field"
                                autocomplete="off">
                         <div v-text="phoneInvalidText" class="invalid-feedback"></div>
                     </div>
@@ -70,7 +71,7 @@
                         </div>
                     </template>
                     <template v-else>
-                        <div class="d-md-flex justify-content-md-end">
+                        <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary">Создать</button>
                         </div>
                     </template>
@@ -78,22 +79,20 @@
             </div>
         </form>
 
-        <form @submit.prevent="getContactsSearch" class="row row-cols-lg-auto g-3 justify-content-center mt-3">
-            <h2 class="h5">Найти контакт</h2>
+        <h2 class="h5 d-flex justify-content-center mb-3">Поиск</h2>
 
-            <div class="col-sm-3">
-                <input v-model.trim="searchFieldText" type="text" class="form-control" placeholder="Найти">
+        <form @submit.prevent="searchContacts" class="row row-cols-lg-auto g-3 justify-content-center">
+            <div class="col-lg-3">
+                <input v-model.trim="term" type="text" class="form-control" placeholder="Найти контакт">
                 <template v-if="isSearchModeActive">
-                    <div class="col badge bg-success text-wrap mt-2" style="width: 10rem;">Найдено: {{searchResultCount}}</div>
+                    <div v-text="searchResultText" class="col badge bg-success text-wrap mt-2" style="width: 11rem;"></div>
                 </template>
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary me-1">Поиск</button>
                 <button @click="cancelContactsSeatch" type="button" class="btn btn-secondary">Сбросить</button>
             </div>
-
         </form>
-
 
         <div class="table-responsive mt-2">
             <table class="table table-striped">
@@ -104,8 +103,7 @@
                                 <input v-model="isChecked"
                                        v-on:change="selectAllCheckbox"
                                        class="form-check-input"
-                                       type="checkbox"
-                                       id="phone-book-table-selected-all-checkbox">
+                                       type="checkbox">
                             </label>
                         </th>
                         <th>№</th>
@@ -119,15 +117,14 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody v-cloak>
+                <tbody>
                     <tr v-for="(contact, index) in contacts" :key="contact.id"
                         v-show="contact.isShow">
                         <td>
                             <label class="d-flex justify-content-sm-center">
                                 <input v-model="contact.isChecked"
                                        class="form-check-input"
-                                       type="checkbox"
-                                       id="phone-book-table-selected-all-checkbox">
+                                       type="checkbox">
                             </label>
                         </td>
                         <td v-text="index + 1"></td>
@@ -144,10 +141,10 @@
                             </template>
                             <template v-else>
                                 <div class="d-flex justify-content-center">
-                                    <button @click="editContact(index)" class="btn btn-primary me-1" type="button">
+                                    <button @click="editContact(contact)" class="btn btn-primary me-1" type="button">
                                         Редактировать
                                     </button>
-                                    <button @click="deleteContact(index)" class="btn btn-danger" type="button">
+                                    <button @click="deleteContact(contact)" class="btn btn-danger" type="button">
                                         Удалить
                                     </button>
                                 </div>
@@ -157,6 +154,18 @@
                 </tbody>
             </table>
         </div>
+
+        <modal ref="confirmDeleteModal">
+            <template v-slot:header>
+                Подтвердите удаление
+            </template>
+
+            <template v-slot:action-button>
+                <button type="button" class="btn btn-danger">Удалить</button>
+            </template> 
+            
+            <p>Вы действительно хотите удалить заметку?</p>
+        </modal>
     </div>
 </body>
 </html>
