@@ -1,52 +1,52 @@
 ﻿(function () {
     "use strict";
 
-    const numbersArrayTask1 = [5, 3, 6, 10, 4, 2, 0, 7, 9, 1];
+    const numbersArray1 = [5, 3, 6, 10, 4, 2, 0, 7, 9, 1];
 
-    console.log(`Массив чисел: ${numbersArrayTask1}`);
+    console.log(`Массив чисел: ${numbersArray1}`);
 
-    function arrayDescendingOrder(array) {
+    function sortDescendingOrder(array) {
         array.sort((e1, e2) => e2 - e1);
     }
 
-    arrayDescendingOrder(numbersArrayTask1);
-    console.log(`Сортировка по убыванию: ${numbersArrayTask1}`);
+    sortDescendingOrder(numbersArray1);
+    console.log(`Сортировка по убыванию: ${numbersArray1}`);
 
-    function getFirstFiveElements(array) {
-        return array.slice(0, 5);
+    function getFirstElements(array, elementsCount) {
+        return array.slice(0, elementsCount);
     }
 
-    function getLastFiveElements(array) {
-        return array.slice(-5);
+    function getLastElements(array, elementsCount) {
+        return array.slice(-elementsCount);
     }
 
-    const firstFiveNumbers = getFirstFiveElements(numbersArrayTask1);
-    const lastFiveNumbers = getLastFiveElements(numbersArrayTask1);
+    const firstFiveNumbers = getFirstElements(numbersArray1, 5);
+    const lastFiveNumbers = getLastElements(numbersArray1, 5);
 
     console.log(`Первые пять чисел: ${firstFiveNumbers}`);
     console.log(`Последние пять чисел: ${lastFiveNumbers}`);
 
-    function getEvenNumbersSum() {
-        return numbersArrayTask1
+    function getEvenNumbersSum(array) {
+        return array
             .filter(e => e % 2 === 0)
-            .reduce((i, e) => i + e, 0);
+            .reduce((r, e) => r + e, 0);
     }
 
-    const evenNumbersSum = getEvenNumbersSum(numbersArrayTask1);
+    const evenNumbersSum = getEvenNumbersSum(numbersArray1);
     console.log(`Сумма четных чисел массива: ${evenNumbersSum}`);
 
     function createNumbersArray(elementsCount) {
-        const newArray = [];
+        const array = [];
 
         for (let i = 1; i <= elementsCount; i++) {
-            newArray.push(i);
+            array.push(i);
         }
 
-        return newArray;
+        return array;
     }
 
-    const numbersArrayTask2 = createNumbersArray(100);
-    console.log(`Массив чисел от 1 до 100: ${numbersArrayTask2};`);
+    const numbersArray2 = createNumbersArray(100);
+    console.log(`Массив чисел от 1 до 100: ${numbersArray2};`);
 
     function getArrayEvenNumbersSquares(array) {
         return array
@@ -54,6 +54,6 @@
             .map(e => e * e);
     }
 
-    const evenNumbersSquaresArray = getArrayEvenNumbersSquares(numbersArrayTask2);
+    const evenNumbersSquaresArray = getArrayEvenNumbersSquares(numbersArray2);
     console.log(`Массив квадратов четных чисел данного массива: ${evenNumbersSquaresArray};`);
 })();
