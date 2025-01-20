@@ -9,12 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="wwwroot\**" />
-	  <EmbeddedResource Remove="wwwroot\**" />
-	  <None Remove="wwwroot\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Include="VueExpress\public\node_modules\%40babel\helper-string-parser\package.json" />
 		<Content Include="VueExpress\public\node_modules\%40babel\helper-validator-identifier\package.json" />
 		<Content Include="VueExpress\public\node_modules\%40babel\parser\package.json" />
