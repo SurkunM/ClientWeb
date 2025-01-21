@@ -155,15 +155,27 @@
             </table>
         </div>
 
-        <modal ref="confirmDeleteModal">
+        <modal ref="confirmSingleDeleteModal">
             <template v-slot:header>
                 Подтвердите удаление
             </template>
 
             <template v-slot:action-button>
                 <button type="button" class="btn btn-danger">Удалить</button>
-            </template> 
-            
+            </template>
+
+            <p>Вы действительно хотите удалить заметку?</p>
+        </modal>
+
+        <modal ref="confirmAllDeleteModal">
+            <template v-slot:header>
+                Подтвердите удаление
+            </template>
+
+            <template v-slot:action-button>
+                <button type="button" class="btn btn-danger">Удалить</button>
+            </template>
+
             <p>Вы действительно хотите удалить заметку?</p>
         </modal>
     </div>

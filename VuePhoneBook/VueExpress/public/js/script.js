@@ -204,7 +204,7 @@ const app = Vue.createApp({
         },
 
         deleteContact(contact) {            
-            this.$refs.confirmDeleteModal.show();//TODO: Модальное окно!
+            this.$refs.confirmAllDeleteModal.show();//TODO: Модальное окно!
 
             this.service.deleteContact(contact.id)
                 .then(response => {
@@ -221,7 +221,7 @@ const app = Vue.createApp({
         },
 
         deleteSelectedContacts() {           
-            this.$refs.confirmDeleteModal.show(); //TODO: Модальное окно!
+            this.$refs.confirmSingleDeleteModal.show(); //TODO: Модальное окно!
 
             this.contacts = this.contacts.filter(c => !c.isChecked);;
 
@@ -331,7 +331,29 @@ app.component("Modal", { // Vue 1:20:00
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            <slot name="header"></slot>
+                            <slot name="header"></slot>                            
+                        </h5>
+                        <button type="button" class="btn-close"@click="hide" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <slot></slot>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="hide">Отмена</button>
+                        <slot name="action-button"></slot>    
+                    </div>
+                </div>
+            </div>
+        </div>
+    `,
+    //--------------all delete
+        template: `
+        <div ref="modal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <slot name="header"></slot>                            
                         </h5>
                         <button type="button" class="btn-close"@click="hide" aria-label="Закрыть"></button>
                     </div>
