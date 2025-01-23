@@ -1,12 +1,13 @@
 ﻿"use strict";
 
-Vue.createApp({
+const app = Vue.createApp({
     data() {
         return {
             newTodoItemText: "",
             newTodoItemId: 1,
             isNewTodoItemTextValid: false,
-            items: []
+            items: [],
+            deleteItemIndex: 0
         };
     },
 
@@ -23,10 +24,7 @@ Vue.createApp({
 
             this.items.push({
                 id: this.newTodoItemId,
-                text: newTodoItemText,
-                isEditing: false,
-                editingText: newTodoItemText,
-                isEditingTextInvalid: false
+                text: newTodoItemText
             })
 
             this.newTodoItemId++;
@@ -34,30 +32,144 @@ Vue.createApp({
             this.newTodoItemText = "";
         },
 
-        deleteTodoItem(itemIndex) {
-            this.items.splice(itemIndex, 1);
+        showDeleteTodoItemConfirm(itemIndex) {
+            this.deleteItemIndex = itemIndex;
+            this.$refs.confirmDeleteModal.show();
         },
 
-        editTodoItem(itemIndex) {
-            const item = this.items[itemIndex];
-            item.editingText = item.text;
-            item.isEditing = true;
+        deleteTodoItem() {
+            this.items.splice(this.deleteItemIndex, 1);
+            this.$refs.confirmDeleteModal.hide();
         },
 
-        saveTodoItems(itemIndex) {
-            const item = this.items[itemIndex];
+        saveTodoItem(itemIndex, newText) {
+            this.items[itemIndex].text = newText;
+        }
+    }
+})
 
-            item.isEditingTextInvalid = false;
+app.component("todo-item", {
+    props: {
+        item: {
+            type: Object,
+            required: true
+        },
 
-            const editingText = item.editingText
+        index: {
+            type: Number,
+            required: true
+        }
+    },
+
+    data() {
+        return {
+            isEditing: false,
+            isEditingTextInvalid: false,
+            editingText: this.item.text
+        }
+    },
+
+    methods: {
+        editTodoItem() {
+            this.editingText = this.item.text,
+                this.isEditing = true
+        },
+
+        saveTodoItem(itemIndex) {
+            this.isEditingTextInvalid = false;
+
+            const editingText = this.editingText
 
             if (editingText.length === 0) {
-                item.isEditingTextInvalid = true;
+                this.isEditingTextInvalid = true;
                 return;
             }
 
-            item.text = editingText;
-            item.isEditing = false;
+            this.$emit("save", this.index, editingText);
+            this.isEditing = false;
         }
-    }
-}).mount("#app");
+    },
+
+    template: `
+        <li class="mb-3">
+        <template v-if="isEditing">
+            <form @submit.prevent="saveTodoItem" class="row">
+                <div class="col">
+                    <input v-model.trim="editingText"
+                            v-bind:class="{ 'is-invalid': isEditingTextInvalid }"
+                            class="form-control"
+                            type="text">
+                    <div class="invalid-feedback">Необходимо задать значение</div>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary me-1" type="submit">
+                        Сохранить
+                    </button>
+                    <button @click="isEditing = false" class="btn btn-secondary" type="button">
+                        Отмена
+                    </button>
+                </div>
+            </form>
+        </template>
+        <template v-else>
+            <div class="row">
+                <div class="col todo-text" v-text="item.text"></div>
+                <div class="col-auto">
+                    <button @click="editTodoItem" class="btn btn-primary me-1" type="button">
+                        Редактировать
+                    </button>
+                    <button @click="$emit('delete', index)" class="btn btn-danger" type="button">
+                        Удалить
+                    </button>
+                </div>
+            </div>
+        </template>
+        </li>
+    `
+});
+
+app.component("delete-modal", {
+    data() {
+        return {
+            instance: null
+        }
+    },
+
+    mounted() {
+        this.instance = new bootstrap.Modal(this.$refs.modal);
+    },
+
+    methods: {
+        show() {
+            this.instance.show();
+        },
+
+        hide() {
+            this.instance.hide();
+        }
+    },
+
+    template: `
+        <div ref="modal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <slot name="header"></slot>
+                        </h5>
+                        <button type="button" class="btn-close"@click="hide" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <slot></slot>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="hide">Отмена</button>
+                        <slot name="action-button"></slot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+});
+
+app.mount("#app");

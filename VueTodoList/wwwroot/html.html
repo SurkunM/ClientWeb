@@ -30,49 +30,34 @@
 
                     <div class="col-auto align-self-start">
                         <button class="todo-form-button btn btn-primary" type="submit">
-                            Cохранить
+                            Сохранить
                         </button>
                     </div>
                 </form>
 
                 <ul v-cloak class="todo-list list-unstyled">
-                    <li v-for="(item, index) in items" :key="item.id" class="mb-3">
-                        <template v-if="item.isEditing">
-                            <form @submit.prevent="saveTodoItems(index)" class="row">
-                                <div class="col">
-                                    <input v-model.trim="item.editingText"
-                                           v-bind:class="{ 'is-invalid': item.isEditingTextInvalid }"
-                                           class="form-control"
-                                           type="text">
-                                    <div class="invalid-feedback">Необходимо задать значение</div>
-                                </div>
-                                <div class="col-auto">
-                                    <button class="btn btn-primary me-1" type="submit">
-                                        Сохранить
-                                    </button>
-                                    <button @click="item.isEditing = false" class="btn btn-secondary" type="button">
-                                        Отмена
-                                    </button>
-                                </div>
-                            </form>
-                        </template>
-                        <template v-else>
-                            <div class="row">
-                                <div class="col todo-text" v-text="item.text"></div>
-                                <div class="col-auto">
-                                    <button @click="editTodoItem(index)" class="btn btn-primary me-1" type="button">
-                                        Редактировать
-                                    </button>
-                                    <button @click="deleteTodoItem(index)" class="btn btn-danger" type="button">
-                                        Удалить
-                                    </button>
-                                </div>
-                            </div>
-                        </template>
-                    </li>
+                    <todo-item v-for="(item, index) in items"
+                               v-bind:item="item"
+                               v-bind:index="index"
+                               v-bind:key="item.id"
+                               @delete="showDeleteTodoItemConfirm"
+                               @save="saveTodoItem">
+                    </todo-item>
                 </ul>
             </div>
         </div>
+
+        <delete-modal v-cloak ref="confirmDeleteModal">
+            <template v-slot:header>
+                Подтвердите удаление
+            </template>
+
+            <template v-slot:action-button>
+                <button @click="deleteTodoItem" type="button" class="btn btn-danger">Удалить</button>
+            </template>
+
+            <p>Вы действительно хотите удалить заметку?</p>
+        </delete-modal>
     </div>
 </body>
 </html>
