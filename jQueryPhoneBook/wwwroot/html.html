@@ -6,43 +6,43 @@
     <title>Phone Book</title>
     <link rel="stylesheet" href="node_modules/jquery-ui-dist/jquery-ui.min.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="node_modules/jquery/dist/jquery.min.js" defer></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="node_modules/jquery-ui-dist/jquery-ui.min.js" defer></script>
     <script src="script.js" defer></script>
 </head>
 <body>
     <div class="container-body">
         <div class="container">
-            <div class="d-flex justify-content-center">
+            <div class="text-center">
                 <h1 class="mt-2">Phone Book</h1>
             </div>
 
             <form class="phone-book-form" id="phone-book-form">
                 <div class="row justify-content-center">
                     <div class="col-lg-3">
-                        <h2 class="current-form-action-text d-flex justify-content-center h5">Создать контакта</h2>
+                        <h2 class="text-center h5">Создание нового контакта</h2>
 
                         <div class="mb-2">
                             <label for="phone-book-text-first-name-field" class="form-label-sm">Имя</label>
                             <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-first-name-field" type="text" autocomplete="off">
-                            <div class="invalid-feedback">Заполниие поле Имя</div>
+                            <div class="invalid-feedback">Заполните поле Имя</div>
                         </div>
 
                         <div class="mb-2">
                             <label for="phone-book-text-last-name-field" class="form-label-sm">Фамилия</label>
                             <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-last-name-field" type="text" autocomplete="off">
-                            <div class="invalid-feedback">Заполниие поле Фамилия</div>
+                            <div class="invalid-feedback">Заполните поле Фамилия</div>
                         </div>
 
                         <div class="mb-2">
                             <label for="phone-book-text-phone-field" class="form-label-sm">Телефон</label>
                             <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-phone-field" type="text" autocomplete="off">
-                            <div class="invalid-feedback" id="phone-error-message"></div>
+                            <div class="invalid-feedback" id="phone-error-message">Заполните поле номер телефона</div>
                         </div>
 
-                        <div class="phone-book-form-buttons d-flex justify-content-end">
-                            <button class="new-contact-add-button ui-button ui-widget ui-corner-all" type="submit">Создать</button>
+                        <div class="d-flex justify-content-end">
+                            <button class="ui-button ui-widget ui-corner-all" type="submit">Создать</button>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                             <th>Номер телефона</th>
                             <th>
                                 <div>
-                                    <button class="ui-button ui-widget ui-corner-all small" id="all-selected-delete-button">Удалить все</button>
+                                    <button class="ui-button ui-widget ui-corner-all small" id="all-selected-delete-button" disabled>Удалить выбранные</button>
                                 </div>
                             </th>
                         </tr>
@@ -89,7 +89,39 @@
                     <p id="confirm-all-selected-delete-dialog-text"></p>
                 </div>
                 <div id="confirm-single-delete-dialog" title="Подтвердите удаление" style="display:none">
-                    <p>Удалить запсь?</p>
+                    <p>Удалить запись?</p>
+                </div>
+                <div id="confirm-editing-dialog" title="edit" style="display:none">
+                    <form class="phone-book-form" id="phone-book-form">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-3">
+                                <h2 class="text-center h5">Создание нового контакта</h2>
+
+                                <div class="mb-2">
+                                    <label for="phone-book-text-first-name-field" class="form-label-sm">Имя</label>
+                                    <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-first-name-field" type="text" autocomplete="off">
+                                    <div class="invalid-feedback">Заполните поле Имя</div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="phone-book-text-last-name-field" class="form-label-sm">Фамилия</label>
+                                    <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-last-name-field" type="text" autocomplete="off">
+                                    <div class="invalid-feedback">Заполните поле Фамилия</div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="phone-book-text-phone-field" class="form-label-sm">Телефон</label>
+                                    <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-phone-field" type="text" autocomplete="off">
+                                    <div class="invalid-feedback" id="phone-error-message">Заполните поле номер телефона</div>
+                                </div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button class="ui-button ui-widget ui-corner-all" type="submit">Создать</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
