@@ -38,7 +38,7 @@
                         <div class="mb-2">
                             <label for="phone-book-text-phone-field" class="form-label-sm">Телефон</label>
                             <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-phone-field" type="text" autocomplete="off">
-                            <div class="invalid-feedback" id="phone-error-message">Заполните поле номер телефона</div>
+                            <div class="invalid-feedback phone-error-message" id="phone-error-message">Заполните поле номер телефона</div>
                         </div>
 
                         <div class="d-flex justify-content-end">
@@ -91,37 +91,31 @@
                 <div id="confirm-single-delete-dialog" title="Подтвердите удаление" style="display:none">
                     <p>Удалить запись?</p>
                 </div>
-                <div id="confirm-editing-dialog" title="edit" style="display:none">
-                    <form class="phone-book-form" id="phone-book-form">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-3">
-                                <h2 class="text-center h5">Создание нового контакта</h2>
 
-                                <div class="mb-2">
-                                    <label for="phone-book-text-first-name-field" class="form-label-sm">Имя</label>
-                                    <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-first-name-field" type="text" autocomplete="off">
-                                    <div class="invalid-feedback">Заполните поле Имя</div>
-                                </div>
-
-                                <div class="mb-2">
-                                    <label for="phone-book-text-last-name-field" class="form-label-sm">Фамилия</label>
-                                    <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-last-name-field" type="text" autocomplete="off">
-                                    <div class="invalid-feedback">Заполните поле Фамилия</div>
-                                </div>
-
-                                <div class="mb-2">
-                                    <label for="phone-book-text-phone-field" class="form-label-sm">Телефон</label>
-                                    <input class="phone-book-text-field form-control form-control-sm" id="phone-book-text-phone-field" type="text" autocomplete="off">
-                                    <div class="invalid-feedback" id="phone-error-message">Заполните поле номер телефона</div>
-                                </div>
-
-                                <div class="d-flex justify-content-end">
-                                    <button class="ui-button ui-widget ui-corner-all" type="submit">Создать</button>
-                                </div>
+                <div id="confirm-editing-dialog" title="Редактирование контакта" style="display:none">                    
+                    <form class="editing-dialog-form">
+                        <fieldset>
+                            <div class="mb-2">
+                                <label for="editing-first-name-field" class="form-label-sm">Имя</label>
+                                <input class="editing-text-field form-control form-control-sm" id="editing-first-name-field" type="text" autocomplete="off">
+                                <div class="invalid-feedback">Заполните поле Имя</div>
                             </div>
-                        </div>
-                    </form>
 
+                            <div class="mb-2">
+                                <label for="editing-last-name-field" class="form-label-sm">Фамилия</label>
+                                <input class="editing-text-field form-control form-control-sm" id="editing-last-name-field" type="text" autocomplete="off">
+                                <div class="invalid-feedback">Заполните поле Фамилия</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="editing-phone-field" class="form-label-sm">Телефон</label>
+                                <input class="editing-text-field form-control form-control-sm" id="editing-phone-field" type="text" autocomplete="off">
+                                <div class="invalid-feedback phone-error-message" id="phone-error-message">Заполните поле номер телефона</div>
+                            </div>
+
+                            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>

@@ -21,7 +21,6 @@
 
     let contacts = [];
     let isSearchModeActive = false;
-    let isEditingMode = false;
 
     phoneBookForm.change(function (e) {
         const field = $(e.target);
@@ -133,45 +132,45 @@
     phoneBookForm.submit(function (e) {
         e.preventDefault();
 
-        function checkFormFieldsValid() {
-            const phoneFieldErrorMessage = $("#phone-error-message");
+        function checkFormFieldsValid(firstNameField, lastNameField, phoneField) {
+            const phoneFieldErrorMessage = $(".phone-error-message");
             let isFormFieldsValid = true;
 
-            if (contactFirstNameField.val().trim().length === 0) {
-                $(contactFirstNameField).addClass("is-invalid");
+            if (firstNameField.val().trim().length === 0) {
+                firstNameField.addClass("is-invalid");
                 isFormFieldsValid = false;
             }
 
-            if (contactLastNameField.val().trim().length === 0) {
-                $(contactLastNameField).addClass("is-invalid");
+            if (lastNameField.val().trim().length === 0) {
+                lastNameField.addClass("is-invalid");
                 isFormFieldsValid = false;
             }
 
-            if (contactPhoneField.val().trim().length === 0) {
+            if (phoneField.val().trim().length === 0) {
                 phoneFieldErrorMessage.text("Заполните поле номер телефона");
-                $(contactPhoneField).addClass("is-invalid");
+                phoneField.addClass("is-invalid");
                 isFormFieldsValid = false;
             }
-            else if (isNaN(Number(contactPhoneField.val().trim()))) {
+            else if (isNaN(Number(phoneField.val().trim()))) {
                 phoneFieldErrorMessage.text("Не верный формат номера телефона");
-                contactPhoneField.addClass("is-invalid");
+                phoneField.addClass("is-invalid");
                 isFormFieldsValid = false;
             }
 
             return isFormFieldsValid;
         }
 
-        function checkExistPhone(index, contactPhoneText) {
-            if (contacts.some(c => c.phoneElement.text() === contactPhoneText && c.idElement.text() !== index)) {
-                contactPhoneField.addClass("is-invalid");
-                $("#phone-error-message").text("Номер уже существует");
+        function checkExistPhone(index, phoneField) {
+            if (contacts.some(c => c.phoneElement.text() === phoneField.val().trim() && c.idElement.text() !== index)) {
+                phoneField.addClass("is-invalid");
+                $(".phone-error-message").text("Номер уже существует");
                 return false;
             }
 
             return true;
         }
 
-        if (!checkFormFieldsValid() || !checkExistPhone(contacts.length, contactPhoneField.val().trim())) {
+        if (!checkFormFieldsValid(contactFirstNameField, contactLastNameField, contactPhoneField) || !checkExistPhone(contacts.length, contactPhoneField)) {
             return;
         }
 
@@ -181,10 +180,10 @@
             newPhoneBookItem.hide();
         }
 
-        let contactId = contacts.length;
-        let contactFirstNameText = contactLastNameField.val().trim();
-        let contactLastNameText = contactFirstNameField.val().trim();
-        let contactPhoneText = contactPhoneField.val().trim();
+        let contactNewIndex = contacts.length;
+        let contactNewFirstNameText = contactLastNameField.val().trim();
+        let contactNewLastNameText = contactFirstNameField.val().trim();
+        let contactNewPhoneText = contactPhoneField.val().trim();
 
         function setPhoneBookViewMode() {
             newPhoneBookItem.html(`
@@ -201,9 +200,9 @@
                         <button class="edit-button ui-button ui-widget ui-corner-all" type="button" title="Редактировать запись"><span class="ui-icon ui-icon-pencil"></span></button>
                         <button class="delete-button ui-button ui-widget ui-corner-all" type="button" title="Удалить запись"><span class="ui-icon ui-icon-trash"></span></button>                       
                     </td>                     
-            `);            
+            `);
 
-            contacts[contactId] = {
+            contacts[contactNewIndex] = {
                 idElement: newPhoneBookItem.find(".contact-index"),
                 isCheckedElement: newPhoneBookItem.find(".new-phone-book-item-checkbox"),
                 firstNameElement: newPhoneBookItem.find(".contact-first-name"),
@@ -211,12 +210,12 @@
                 phoneElement: newPhoneBookItem.find(".contact-phone")
             }
 
-            let contact = contacts[contactId];
+            let contact = contacts[contactNewIndex];
 
-            contact.idElement.text(contactId + 1);
-            contact.firstNameElement.text(contactFirstNameText);
-            contact.lastNameElement.text(contactLastNameText);
-            contact.phoneElement.text(contactPhoneText);
+            contact.idElement.text(contactNewIndex + 1);
+            contact.firstNameElement.text(contactNewFirstNameText);
+            contact.lastNameElement.text(contactNewLastNameText);
+            contact.phoneElement.text(contactNewPhoneText);
 
             contact.isCheckedElement.change(function () {
                 if (!$(this).prop("checked")) {
@@ -231,7 +230,7 @@
                     resizable: false,
                     modal: true,
                     buttons: {
-                        "Да": () => {                          
+                        "Да": () => {
                             contacts.splice(Number(contact.idElement.text()) - 1, 1);
                             newPhoneBookItem.remove();
 
@@ -247,7 +246,7 @@
                                 searchForm.triggerHandler("submit");
                             }
 
-                            setDisabledAllSelectedDeleteButton();
+                            setDisabledAllSelectedDeleteButton();// Удаление найденых контактов сбрасывает чекбоксы! Но Алл чек бокс не сбрасывается!
                             confirmSingleDeleteDialog.dialog("close");
                         },
 
@@ -256,83 +255,52 @@
                 });
             })
 
-            newPhoneBookItem.find(".edit-button").click(function () {// Сделать через модальное окно! Сейчас если  при ред. удалить контакт не удалится!
+            newPhoneBookItem.find(".edit-button").click(function () {
+                $(".editing-text-field").removeClass("is-invalid");
+
+                confirmEditingDialog.find(".editing-dialog-form")
+                    .submit(function (e) {
+                        e.preventDefault();
+                        addEditingFields();
+                    })
+                    .change(function (e) {
+                        const field = $(e.target);
+
+                        field.removeClass("is-invalid");
+                        field.toggleClass("is-valid", field.val().trim().length > 0);
+                    });
+
+                const editFirstNameField = confirmEditingDialog.find("#editing-first-name-field");
+                const editLastNameField = confirmEditingDialog.find("#editing-last-name-field");
+                const editPhoneField = confirmEditingDialog.find("#editing-phone-field");
+
+                const editContactId = contact.idElement.text();
+                editFirstNameField.val(contact.firstNameElement.text());
+                editLastNameField.val(contact.lastNameElement.text());
+                editPhoneField.val(contact.phoneElement.text());
+
+                function addEditingFields() {
+                    if (!checkFormFieldsValid(editFirstNameField, editLastNameField, editPhoneField) || !checkExistPhone(editContactId, editPhoneField)) {
+                        return;
+                    }
+
+                    contactNewIndex = editContactId - 1;
+                    contactNewFirstNameText = editFirstNameField.val().trim();
+                    contactNewLastNameText = editLastNameField.val().trim();
+                    contactNewPhoneText = editPhoneField.val().trim();
+
+                    setPhoneBookViewMode();
+                    confirmEditingDialog.dialog("close");
+                }
+
                 confirmEditingDialog.dialog({
                     resizable: false,
                     modal: true,
                     buttons: {
-                        "Сохранить": () => {
-
-
-                            confirmEditingDialog.dialog("close")
-                        },
-
+                        "Сохранить": () => addEditingFields(),
                         "Отмена": () => confirmEditingDialog.dialog("close")
                     }
-
-                })
-                //if (isEditingMode) {
-                //    return;
-                //}
-
-                //isEditingMode = true;
-
-                //newPhoneBookItem.html(`
-                //    <td>
-                //        <label class="d-flex justify-content-sm-center">
-                //            <input class="new-phone-book-item-checkbox form-check-input" type="checkbox">
-                //        </label>
-                //    </td>
-                //    <td class="contact-index"></td>
-                //    <td>
-                //        <div class="mb-2">                            
-                //            <input class="edit-contact-last-name-field form-control form-control-sm" type="text" autocomplete="off">
-                //            <div class="invalid-feedback">Заполните поле</div>
-                //        </div>
-                //    </td>
-                //    <td>
-                //        <div class="mb-2">                            
-                //            <input class="edit-contact-first-name-field form-control form-control-sm" type="text" autocomplete="off">
-                //            <div class="invalid-feedback">Заполните поле</div>
-                //        </div>
-                //    </td>
-                //    <td>
-                //        <div class="mb-2">                            
-                //            <input class="edit-contact-phone-field form-control form-control-sm" type="text" autocomplete="off">
-                //            <div class="invalid-feedback" id="phone-error-message">Заполните поле</div>
-                //        </div>
-                //    </td>
-                //    <td>                        
-                //        <button class="save-button ui-button ui-widget ui-corner-all" type="button">Сохранить</button>
-                //        <button class="cancel-button ui-button ui-widget ui-corner-all" type="button">Отменить</span></button>                       
-                //    </td>                     
-                //`);
-
-                //const editContactId = newPhoneBookItem.find(".contact-index");
-                //const editLastNameField = newPhoneBookItem.find(".edit-contact-last-name-field");
-                //const editFirstNameField = newPhoneBookItem.find(".edit-contact-first-name-field");
-                //const editPhoneField = newPhoneBookItem.find(".edit-contact-phone-field");               
-
-                //editContactId.text(contact.idElement.text());
-
-                //editLastNameField.val(contact.lastNameElement.text());
-                //editFirstNameField.val(contact.firstNameElement.text());
-                //editPhoneField.val(contact.phoneElement.text());
-
-                //newPhoneBookItem.find(".save-button").click(function () {
-                //    contactId = editContactId.text() - 1;
-                //    contactLastNameText = editLastNameField.val().trim();
-                //    contactFirstNameText = editFirstNameField.val().trim();
-                //    contactPhoneText = editPhoneField.val().trim();
-
-                //    isEditingMode = false;
-                //    setPhoneBookViewMode();
-                //});
-
-                //newPhoneBookItem.find(".cancel-button").click(function () {
-                //    isEditingMode = false;
-                //    setPhoneBookViewMode();
-                //});
+                });
             });
         }
 
