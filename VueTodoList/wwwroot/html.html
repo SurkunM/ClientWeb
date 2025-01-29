@@ -17,13 +17,12 @@
                 <h1 class="display-4">TODO List</h1>
 
                 <form @submit.prevent="addTodItem" class="new-todo-form row g-2 align-items-center mb-4">
-                    <label class="label" for="new-todo-text-field">Введите текст заметки</label>
+                    <label class="label">Введите текст заметки</label>
 
                     <div class="col">
                         <input v-model.trim="newTodoItemText"
                                v-bind:class="{ 'is-invalid': isNewTodoItemTextValid }"
-                               class="form-control"
-                               id="new-todo-text-field"
+                               class="form-control"                               
                                type="text">
                         <div class="invalid-feedback">Необходимо задать значение</div>
                     </div>
