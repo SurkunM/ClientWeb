@@ -29,7 +29,7 @@
     function getEvenNumbersSum(array) {
         return array
             .filter(e => e % 2 === 0)
-            .reduce((evenNumbersSumResult, evenNumber) => evenNumbersSumResult + evenNumber, 0);
+            .reduce((sum, e) => sum + e, 0);
     }
 
     const evenNumbersSum = getEvenNumbersSum(numbersArray1);
