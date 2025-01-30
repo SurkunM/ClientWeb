@@ -35,17 +35,20 @@
         const searchText = searchField.val().trim().toLocaleLowerCase();
 
         if (searchText.length === 0) {
+            searchResultText.text("Введите данные для поиска");
             return;
         }
 
-        isSearchModeActive = true;
-        let findItemsCount = 0;
+        if (selectAllItemsCheckbox.prop("checked") && !isSearchModeActive) {
+            selectAllItemsCheckbox.prop("checked", false);
+            selectAllItemsCheckbox.triggerHandler("change");
+        }
 
         phoneBookTBody.find("tr")
-            .filter((i, e) => $(e).is(":visible"))
             .each((i, e) => $(e).hide());
 
-        selectAllItemsCheckbox.triggerHandler("change");
+        isSearchModeActive = true;
+        let findItemsCount = 0;
 
         contacts
             .filter(c => c.firstNameElement.text().toLocaleLowerCase().indexOf(searchText) >= 0 ||
@@ -55,6 +58,10 @@
                 c.idElement.closest("tr").show();
                 findItemsCount++;
             });
+
+        if (findItemsCount == 0) {
+            selectAllItemsCheckbox.prop("checked", false);
+        }
 
         searchResultText.text(`Найдено: ${findItemsCount}`);
     });
@@ -81,7 +88,7 @@
 
     selectAllItemsCheckbox.change(function () {
         contacts.forEach(c => {
-            if ($(selectAllItemsCheckbox).prop("checked") && c.idElement.is(":visible")) {
+            if (selectAllItemsCheckbox.prop("checked") && c.idElement.is(":visible")) {
                 $(c.isCheckedElement).prop("checked", true);
             }
             else {
@@ -176,10 +183,6 @@
 
         const newPhoneBookItem = $("<tr>").addClass(".new-phone-book-item");
 
-        if (isSearchModeActive) {
-            newPhoneBookItem.hide();
-        }
-
         let contactNewIndex = contacts.length;
         let contactNewFirstNameText = contactLastNameField.val().trim();
         let contactNewLastNameText = contactFirstNameField.val().trim();
@@ -217,6 +220,10 @@
             contact.lastNameElement.text(contactNewLastNameText);
             contact.phoneElement.text(contactNewPhoneText);
 
+            if (isSearchModeActive) {
+                searchForm.triggerHandler("submit");
+            }
+
             contact.isCheckedElement.change(function () {
                 if (!$(this).prop("checked")) {
                     selectAllItemsCheckbox.prop("checked", false);
@@ -247,8 +254,8 @@
                             }
 
                             setDisabledAllSelectedDeleteButton();// Удаление найденых контактов сбрасывает чекбоксы! Но Алл чек бокс не сбрасывается!
-                            confirmSingleDeleteDialog.dialog("close");
-                        },
+                            confirmSingleDeleteDialog.dialog("close");//Можно череза переменную обьекта searchForm.findElCount и вынести в отдельную функцию
+                        },                                             // Сделать что бы поиск с пустым searchText как то убирался при удалении или редактировании     
 
                         "Нет": () => confirmSingleDeleteDialog.dialog("close")
                     }
