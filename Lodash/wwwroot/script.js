@@ -31,9 +31,9 @@
 
     const descendingSortedFrom20To30AgePersonsUniqueNames = _.chain(persons)
         .filter(p => p.age >= 20 && p.age <= 30)
+        .orderBy("age", "desc")
         .map("name")
         .uniq()
-        .orderBy("age", "desc")
         .value();
 
     console.log("Список уникальных имен людей возрастом от 20 до 30, отсортированный по убыванию:");
