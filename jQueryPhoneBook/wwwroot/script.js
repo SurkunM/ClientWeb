@@ -21,6 +21,7 @@
 
     let contacts = [];
     let isSearchModeActive = false;
+    let findItemsCount = 0;
 
     phoneBookForm.change(function (e) {
         const field = $(e.target);
@@ -29,17 +30,30 @@
         field.toggleClass("is-valid", field.val().trim().length > 0);
     });
 
+    function setFindItemsCount() {
+        findItemsCount = 0;
+
+        contacts
+            .filter(c => c.idElement.closest("tr").is(":visible"))
+            .forEach(() => {
+                findItemsCount++;
+            });
+
+        searchResultText.text(`Найдено: ${findItemsCount}`);
+    }
+
     searchForm.submit(function (e) {
         e.preventDefault();
 
         const searchText = searchField.val().trim().toLocaleLowerCase();
 
         if (searchText.length === 0) {
-            searchResultText.text("Введите данные для поиска");
             return;
         }
 
-        if (selectAllItemsCheckbox.prop("checked") && !isSearchModeActive) {
+        isSearchModeActive = true;
+
+        if ($(":checked").length > 0) {
             selectAllItemsCheckbox.prop("checked", false);
             selectAllItemsCheckbox.triggerHandler("change");
         }
@@ -47,23 +61,20 @@
         phoneBookTBody.find("tr")
             .each((i, e) => $(e).hide());
 
-        isSearchModeActive = true;
-        let findItemsCount = 0;
-
         contacts
-            .filter(c => c.firstNameElement.text().toLocaleLowerCase().indexOf(searchText) >= 0 ||
+            .filter(c =>
+                c.firstNameElement.text().toLocaleLowerCase().indexOf(searchText) >= 0 ||
                 c.lastNameElement.text().toLocaleLowerCase().indexOf(searchText) >= 0 ||
                 c.phoneElement.text().toLocaleLowerCase().indexOf(searchText) >= 0)
             .forEach(c => {
                 c.idElement.closest("tr").show();
-                findItemsCount++;
             });
+
+        setFindItemsCount();
 
         if (findItemsCount == 0) {
             selectAllItemsCheckbox.prop("checked", false);
         }
-
-        searchResultText.text(`Найдено: ${findItemsCount}`);
     });
 
     $("#phone-book-clear-button").click(function () {
@@ -71,9 +82,10 @@
             .filter(c => c.idElement.is(":hidden"))
             .forEach(c => c.idElement.closest("tr").show());
 
-        isSearchModeActive = false;
         searchResultText.text("");
         searchField.val("");
+
+        isSearchModeActive = false;
     });
 
     function setDisabledAllSelectedDeleteButton() {
@@ -101,15 +113,15 @@
 
     allSelectedDeleteButton.click(function () {
         const checkedItemsCount = phoneBookTBody.find(":checked").length;
-
         const checkedItemsCountText = confirmAllSelectedDeleteDialog.find("#confirm-all-selected-delete-dialog-text");
+
         checkedItemsCountText.text(`Удалить ${checkedItemsCount} записей?`);
 
         confirmAllSelectedDeleteDialog.dialog({
             resizable: false,
             modal: true,
             buttons: {
-                "Да": () => {
+                "Да"() {
                     contacts
                         .filter(c => c.isCheckedElement.prop("checked"))
                         .forEach(c => {
@@ -123,7 +135,7 @@
                     });
 
                     if (isSearchModeActive) {
-                        searchForm.triggerHandler("submit");
+                        setFindItemsCount();
                     }
 
                     allSelectedDeleteButton.prop("disabled", true);
@@ -131,7 +143,9 @@
                     confirmAllSelectedDeleteDialog.dialog("close");
                 },
 
-                "Нет": () => confirmAllSelectedDeleteDialog.dialog("close")
+                "Нет"() {
+                    confirmAllSelectedDeleteDialog.dialog("close");
+                }
             }
         });
     });
@@ -220,10 +234,6 @@
             contact.lastNameElement.text(contactNewLastNameText);
             contact.phoneElement.text(contactNewPhoneText);
 
-            if (isSearchModeActive) {
-                searchForm.triggerHandler("submit");
-            }
-
             contact.isCheckedElement.change(function () {
                 if (!$(this).prop("checked")) {
                     selectAllItemsCheckbox.prop("checked", false);
@@ -237,7 +247,7 @@
                     resizable: false,
                     modal: true,
                     buttons: {
-                        "Да": () => {
+                        "Да"() {
                             contacts.splice(Number(contact.idElement.text()) - 1, 1);
                             newPhoneBookItem.remove();
 
@@ -250,14 +260,16 @@
                             }
 
                             if (isSearchModeActive) {
-                                searchForm.triggerHandler("submit");
+                                setFindItemsCount();
                             }
 
-                            setDisabledAllSelectedDeleteButton();// Удаление найденых контактов сбрасывает чекбоксы! Но Алл чек бокс не сбрасывается!
-                            confirmSingleDeleteDialog.dialog("close");//Можно череза переменную обьекта searchForm.findElCount и вынести в отдельную функцию
-                        },                                             // Сделать что бы поиск с пустым searchText как то убирался при удалении или редактировании     
+                            setDisabledAllSelectedDeleteButton();
+                            confirmSingleDeleteDialog.dialog("close");
+                        },
 
-                        "Нет": () => confirmSingleDeleteDialog.dialog("close")
+                        "Нет"() {
+                            confirmSingleDeleteDialog.dialog("close");
+                        }
                     }
                 });
             })
@@ -304,8 +316,13 @@
                     resizable: false,
                     modal: true,
                     buttons: {
-                        "Сохранить": () => addEditingFields(),
-                        "Отмена": () => confirmEditingDialog.dialog("close")
+                        "Сохранить"() {
+                            addEditingFields();
+                        },
+
+                        "Отмена"() {
+                            confirmEditingDialog.dialog("close");
+                        }
                     }
                 });
             });
@@ -322,6 +339,11 @@
         setPhoneBookViewMode();
 
         phoneBookTBody.append(newPhoneBookItem);
+
+        if (isSearchModeActive) {
+            searchForm.triggerHandler("submit");
+        }
+
         clearFormFields();
     });
 });
