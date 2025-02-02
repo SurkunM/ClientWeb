@@ -28,7 +28,6 @@ const app = Vue.createApp({
             })
 
             this.newTodoItemId++;
-
             this.newTodoItemText = "";
         },
 
@@ -71,11 +70,11 @@ app.component("todo-item", {
 
     methods: {
         editTodoItem() {
-            this.editingText = this.item.text,
-                this.isEditing = true
+            this.editingText = this.item.text;
+            this.isEditing = true;
         },
 
-        saveTodoItem(itemIndex) {
+        saveTodoItem() {
             this.isEditingTextInvalid = false;
 
             const editingText = this.editingText
