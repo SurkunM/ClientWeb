@@ -91,38 +91,38 @@ app.component("todo-item", {
 
     template: `
         <li class="mb-3">
-        <template v-if="isEditing">
-            <form @submit.prevent="saveTodoItem" class="row">
-                <div class="col">
-                    <input v-model.trim="editingText"
-                            v-bind:class="{ 'is-invalid': isEditingTextInvalid }"
-                            class="form-control"
-                            type="text">
-                    <div class="invalid-feedback">Необходимо задать значение</div>
+            <template v-if="isEditing">
+                <form @submit.prevent="saveTodoItem" class="row">
+                    <div class="col">
+                        <input v-model.trim="editingText"
+                               v-bind:class="{ 'is-invalid': isEditingTextInvalid }"
+                               class="form-control"
+                               type="text">
+                        <div class="invalid-feedback">Необходимо задать значение</div>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary me-1" type="submit">
+                            Сохранить
+                        </button>
+                        <button @click="isEditing = false" class="btn btn-secondary" type="button">
+                            Отмена
+                        </button>
+                    </div>
+                </form>
+            </template>
+            <template v-else>
+                <div class="row">
+                    <div class="col todo-text" v-text="item.text"></div>
+                    <div class="col-auto">
+                        <button @click="editTodoItem" class="btn btn-primary me-1" type="button">
+                            Редактировать
+                        </button>
+                        <button @click="$emit('delete', index)" class="btn btn-danger" type="button">
+                            Удалить
+                        </button>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <button class="btn btn-primary me-1" type="submit">
-                        Сохранить
-                    </button>
-                    <button @click="isEditing = false" class="btn btn-secondary" type="button">
-                        Отмена
-                    </button>
-                </div>
-            </form>
-        </template>
-        <template v-else>
-            <div class="row">
-                <div class="col todo-text" v-text="item.text"></div>
-                <div class="col-auto">
-                    <button @click="editTodoItem" class="btn btn-primary me-1" type="button">
-                        Редактировать
-                    </button>
-                    <button @click="$emit('delete', index)" class="btn btn-danger" type="button">
-                        Удалить
-                    </button>
-                </div>
-            </div>
-        </template>
+            </template>
         </li>
     `
 });
