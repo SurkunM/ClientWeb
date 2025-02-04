@@ -53,9 +53,7 @@ const app = Vue.createApp({
             isLastNameFieldComplete: false,
             isPhoneFieldComplete: false,
 
-            formTitleText: "Создать контакт",
-            isEditing: false,
-            editingContactId: 0,
+            selectedContact: null,
 
             isSearchModeActive: false,
             searchResultText: "",
@@ -164,7 +162,7 @@ const app = Vue.createApp({
                     this.setShowContactsCount();
                 })
                 .catch(() => {
-                    alert("Get contacts ERORR");
+                    alert("Get contacts ERORR");//TODO: ред. сервер. message!
                 });
         },
 
@@ -203,10 +201,13 @@ const app = Vue.createApp({
             this.clearFormsFields();
         },
 
-        deleteContact(contact) {            
-            this.$refs.confirmAllDeleteModal.show();//TODO: Модальное окно!
+        showSingleDeleteConfirm(contact) {
+            this.selectedContact = contact;
+            this.$refs.confirmSingleDeleteModal.show();
+        },
 
-            this.service.deleteContact(contact.id)
+        deleteContact() {
+            this.service.deleteContact(this.selectedContact.id)
                 .then(response => {
                     if (!response.success) {
                         alert(response.message);
@@ -218,33 +219,30 @@ const app = Vue.createApp({
                 .catch(() => {
                     alert("Не удалось удалить");
                 });
+
+            this.$refs.confirmSingleDeleteModal.hide();
         },
 
-        deleteSelectedContacts() {           
-            this.$refs.confirmSingleDeleteModal.show(); //TODO: Модальное окно!
-
+        deleteSelectedContacts() {
             this.contacts = this.contacts.filter(c => !c.isChecked);;
 
             this.setShowContactsCount();
             this.isChecked = false;
         },
 
-        editContact(contact) {
+        showEditContactModal(contact) {
+            this.selectedContact = contact;
+            this.$refs.contactEditingModal.show(contact);
+        },
+
+        editContact() {// Через модальное окно!
             this.firstName = contact.firstName;
             this.lastName = contact.lastName;
             this.phone = contact.phone;
-
-            this.formTitleText = "Редактировать контакт";
-            this.editingContactId = contact.id;
-            this.isEditing = true;
         },
 
         cancelEditContact() {
             this.clearFormsFields();
-
-            this.formTitleText = "Создать контакт";
-            this.editingContactId = 0;
-            this.isEditing = false;
         },
 
         saveEditContact(itemIndex) {
@@ -304,8 +302,193 @@ const app = Vue.createApp({
     }
 });
 
-app.component("Modal", { // Vue 1:20:00
-    data() {      
+app.component("phone-book-item", {
+    props: {
+        contact: {
+            type: Object,
+            required: true
+        },
+
+        index: {
+            type: Number,
+            required: true
+        }
+    },
+
+    data() {
+        return {
+            isEditing: false,
+            isEditingTextInvalid: false,
+        }
+    },
+
+    methods: {
+
+    },
+
+    template: `
+        <teleport to="#tbody">
+            <tr>
+                <td>
+                    <label class="d-flex justify-content-sm-center">
+                        <input v-model="contact.isChecked" class="form-check-input" type="checkbox">
+                    </label>
+                </td>
+                <td v-text="index + 1"></td>
+                <td v-text="contact.firstName"></td>
+                <td v-text="contact.lastName"></td>
+                <td v-text="contact.phone"></td>
+                <td>                   
+                    <div class="d-flex justify-content-center">
+                        <button @click="$emit('contact-edit', contact)" class="btn btn-primary me-1" type="button">
+                            Редактировать
+                        </button>
+                        <button @click="$emit('contact-delete', contact)" class="btn btn-danger" type="button">
+                            Удалить
+                        </button>
+                    </div>                    
+                </td>
+            </tr>
+        </teleport>
+    `
+});
+
+app.component("editing-modal", {
+    data() {
+        return {
+            instance: null,
+            editContact: null,
+            editFirstName: "",
+            editLastName: "",
+            editPhone: "",
+
+            editPhoneInvalidText: "",
+
+            isFirstNameFieldValid: false,
+            isLastNameFieldValid: false,
+            isPhoneFieldValid: false,
+
+            isFirstNameFieldComplete: false,
+            isLastNameFieldComplete: false,
+            isPhoneFieldComplete: false,
+        };
+    },
+
+    mounted() {
+        this.instance = new bootstrap.Modal(this.$refs.editingModal);
+    },
+
+    methods: {
+        show(contact) {
+            this.editFirstName = contact.firstName;
+            this.editLastName = contact.lastName;
+            this.editPhone = contact.phone;
+
+            this.instance.show();
+        },
+
+        hide() {
+            this.instance.hide();
+        },
+    },
+
+    template: `
+        <div ref="editingModal" class="modal fade" id="exampleModal" tabindex="-1"  data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Редактирование контакта</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>                                 
+                            <div class="mb-2">
+                                <label for="edit-first-name-field" class="form-label-sm">Имя</label>
+                                <input v-model.trim="editFirstName"
+                                       v-bind:class="{'is-invalid': false, 'is-valid': false}"
+                                       id="edit-first-name-field"
+                                       type="text"
+                                       class="form-control form-control-sm"                                        
+                                       autocomplete="off">
+                                <div class="invalid-feedback">Заполните поле Имя</div>
+                            </div>
+
+                            <div class="mb-2">
+                            <label for="edit-last-name-field" class="form-label-sm">Фамилия</label>
+                                <input v-model.trim="editLastName"
+                                       v-bind:class="{'is-invalid': false, 'is-valid':false}"
+                                       id="edit-last-name-field"
+                                       type="text"
+                                       class="form-control form-control-sm"                                        
+                                       autocomplete="off">
+                                <div class="invalid-feedback">Заполните поле Фамилия</div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="edit-phone-field" class="form-label-sm">Телефон</label>
+                                <input v-model.trim="editPhone"
+                                       v-bind:class="{'is-invalid': false, 'is-valid': false}"                                        
+                                       type="text"
+                                       class="form-control form-control-sm"
+                                       id="edit-phone-field"
+                                       autocomplete="off">
+                                <div v-text="editPhoneInvalidText" class="invalid-feedback"></div>
+                            </div>                                                                          
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button @click="hide" type="button" class="btn btn-primary">Сохранить</button>
+                        <button @click="hide" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+});
+
+app.component("single-delete-modal", {
+    data() {
+        return {
+            instance: null
+        };
+    },
+
+    mounted() {
+        this.instance = new bootstrap.Modal(this.$refs.singleDeleteModal);
+    },
+
+    methods: {
+        show() {
+            this.instance.show();
+        },
+
+        hide() {
+            this.instance.hide();
+        }
+    },
+
+    template: `
+        <div ref="singleDeleteModal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Подтвердите удаление</h5>
+                        <button type="button" class="btn-close"@click="hide" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">Вы действительно хотите удалить заметку?</div>
+                    <div class="modal-footer">
+                        <button @click="$emit('delete')" type="button" class="btn btn-danger">Удалить</button>
+                        <button @click="hide" type="button" class="btn btn-secondary">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+});
+
+app.component("all-delete-modal", {
+    data() {
         return {
             instance: null
         };
@@ -325,44 +508,18 @@ app.component("Modal", { // Vue 1:20:00
         }
     },
 
-    template:`
+    template: `
         <div ref="modal" class="modal fade" tabindex="-1">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">
-                            <slot name="header"></slot>                            
-                        </h5>
+                        <h5 class="modal-title">Подтвердите удаление</h5>
                         <button type="button" class="btn-close"@click="hide" aria-label="Закрыть"></button>
                     </div>
-                    <div class="modal-body">
-                        <slot></slot>
-                    </div>
+                    <div class="modal-body">Вы действительно хотите удалить все выделенные заметки?</div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="hide">Отмена</button>
-                        <slot name="action-button"></slot>    
-                    </div>
-                </div>
-            </div>
-        </div>
-    `,
-    //--------------all delete
-        template: `
-        <div ref="modal" class="modal fade" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <slot name="header"></slot>                            
-                        </h5>
-                        <button type="button" class="btn-close"@click="hide" aria-label="Закрыть"></button>
-                    </div>
-                    <div class="modal-body">
-                        <slot></slot>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="hide">Отмена</button>
-                        <slot name="action-button"></slot>    
+                        <button @click="$emit('delete')" type="button" class="btn btn-danger">Удалить</button>
+                        <button @click="hide" type="button" class="btn btn-secondary">Отмена</button>
                     </div>
                 </div>
             </div>

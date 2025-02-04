@@ -22,7 +22,7 @@
         <form @submit.prevent="createContact" class="mt-2">
             <div class="row justify-content-center">
                 <div class="col-lg-3">
-                    <h2 v-text="formTitleText" class="h5 d-flex justify-content-center"></h2>
+                    <h2 class="h5 d-flex justify-content-center">Создать контакт</h2>
 
                     <div class="mb-1">
                         <label for="first-name-field" class="form-label-sm">Имя</label>
@@ -60,21 +60,9 @@
                         <div v-text="phoneInvalidText" class="invalid-feedback"></div>
                     </div>
 
-                    <template v-if="isEditing">
-                        <div class="d-md-flex justify-content-md-end">
-                            <button @click="saveEditContact(editingContactIndex)" class="btn btn-primary me-1" type="button">
-                                Сохранить
-                            </button>
-                            <button @click="cancelEditContact" class="btn btn-secondary" type="button">
-                                Отмена
-                            </button>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary">Создать</button>
-                        </div>
-                    </template>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Создать</button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -100,10 +88,7 @@
                     <tr>
                         <th>
                             <label class="d-flex justify-content-sm-center">
-                                <input v-model="isChecked"
-                                       v-on:change="selectAllCheckbox"
-                                       class="form-check-input"
-                                       type="checkbox">
+                                <input v-model="isChecked" @change="selectAllCheckbox" class="form-check-input" type="checkbox">
                             </label>
                         </th>
                         <th>№</th>
@@ -117,67 +102,24 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr v-for="(contact, index) in contacts" :key="contact.id"
-                        v-show="contact.isShow">
-                        <td>
-                            <label class="d-flex justify-content-sm-center">
-                                <input v-model="contact.isChecked"
-                                       class="form-check-input"
-                                       type="checkbox">
-                            </label>
-                        </td>
-                        <td v-text="index + 1"></td>
-                        <td v-text="contact.firstName"></td>
-                        <td v-text="contact.lastName"></td>
-                        <td v-text="contact.phone"></td>
-                        <td>
-                            <template v-if="isEditing">
-                                <div class="d-flex justify-content-center">
-                                    <button @click="cancelEditContact" class="btn btn-secondary" type="button">
-                                        Отмена
-                                    </button>
-                                </div>
-                            </template>
-                            <template v-else>
-                                <div class="d-flex justify-content-center">
-                                    <button @click="editContact(contact)" class="btn btn-primary me-1" type="button">
-                                        Редактировать
-                                    </button>
-                                    <button @click="deleteContact(contact)" class="btn btn-danger" type="button">
-                                        Удалить
-                                    </button>
-                                </div>
-                            </template>
-                        </td>
-                    </tr>
+                <tbody id="tbody">
+                    <phone-book-item v-for="(contact, index) in contacts"
+                                     :contact="contact"
+                                     :index="index"
+                                     :key="contact.id"
+                                     v-show="contact.isShow"
+                                     @contact-delete="showSingleDeleteConfirm"
+                                     @contact-edit="showEditContactModal">
+                    </phone-book-item>
                 </tbody>
             </table>
         </div>
 
-        <modal ref="confirmSingleDeleteModal">
-            <template v-slot:header>
-                Подтвердите удаление
-            </template>
+        <editing-modal ref="contactEditingModal" :contact="selectedContact"></editing-modal>
 
-            <template v-slot:action-button>
-                <button type="button" class="btn btn-danger">Удалить</button>
-            </template>
+        <single-delete-modal ref="confirmSingleDeleteModal" @delete="deleteContact"></single-delete-modal>
 
-            <p>Вы действительно хотите удалить заметку?</p>
-        </modal>
-
-        <modal ref="confirmAllDeleteModal">
-            <template v-slot:header>
-                Подтвердите удаление
-            </template>
-
-            <template v-slot:action-button>
-                <button type="button" class="btn btn-danger">Удалить</button>
-            </template>
-
-            <p>Вы действительно хотите удалить заметку?</p>
-        </modal>
+        <all-delete-modal ref="confirmAllDeleteModal" @delete="deleteContact"></all-delete-modal>
     </div>
 </body>
 </html>
