@@ -115,7 +115,7 @@
             </table>
         </div>
 
-        <editing-modal ref="contactEditingModal" :contact="selectedContact"></editing-modal>
+        <editing-modal ref="contactEditingModal" @save="saveEditContact"></editing-modal>
 
         <single-delete-modal ref="confirmSingleDeleteModal" @delete="deleteContact"></single-delete-modal>
 

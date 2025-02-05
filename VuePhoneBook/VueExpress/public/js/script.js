@@ -223,7 +223,7 @@ const app = Vue.createApp({
             this.$refs.confirmSingleDeleteModal.hide();
         },
 
-        deleteSelectedContacts() {
+        deleteSelectedContacts() {// Модальное окно!
             this.contacts = this.contacts.filter(c => !c.isChecked);;
 
             this.setShowContactsCount();
@@ -232,7 +232,7 @@ const app = Vue.createApp({
 
         showEditContactModal(contact) {
             this.selectedContact = contact;
-            this.$refs.contactEditingModal.show(contact);
+            this.$refs.contactEditingModal.showEditingForm(contact);
         },
 
         editContact() {// Через модальное окно!
@@ -241,26 +241,10 @@ const app = Vue.createApp({
             this.phone = contact.phone;
         },
 
-        cancelEditContact() {
-            this.clearFormsFields();
-        },
+        saveEditContact(editedContact) {           
+            const contact = editedContact;            
 
-        saveEditContact(itemIndex) {
-            if (this.checkNewContactFieldsInvalid()) {
-                return;
-            }
-
-            const contact = this.contacts[itemIndex];
-
-            if (this.checkExistPhone(contact.id, this.phone)) {
-                return;
-            }
-
-            contact.firstName = this.firstName;
-            contact.lastName = this.lastName;
-            contact.phone = this.phone;
-
-            this.cancelEditContact();
+            this.contact          
         },
 
         setShowContactsCount() {
@@ -292,7 +276,7 @@ const app = Vue.createApp({
             }
         },
 
-        selectAllCheckbox() {
+        selectAllCheckbox() {// Чекбоксы у контактов на сервере!
             this.contacts.forEach(c => {
                 if (c.isShow) {
                     c.isChecked = this.isChecked;
@@ -320,10 +304,6 @@ app.component("phone-book-item", {
             isEditing: false,
             isEditingTextInvalid: false,
         }
-    },
-
-    methods: {
-
     },
 
     template: `
@@ -357,7 +337,8 @@ app.component("editing-modal", {
     data() {
         return {
             instance: null,
-            editContact: null,
+            contact: null,
+
             editFirstName: "",
             editLastName: "",
             editPhone: "",
@@ -366,11 +347,7 @@ app.component("editing-modal", {
 
             isFirstNameFieldValid: false,
             isLastNameFieldValid: false,
-            isPhoneFieldValid: false,
-
-            isFirstNameFieldComplete: false,
-            isLastNameFieldComplete: false,
-            isPhoneFieldComplete: false,
+            isPhoneFieldValid: false
         };
     },
 
@@ -379,17 +356,33 @@ app.component("editing-modal", {
     },
 
     methods: {
-        show(contact) {
-            this.editFirstName = contact.firstName;
-            this.editLastName = contact.lastName;
-            this.editPhone = contact.phone;
+        showEditingForm(contact) {
+            this.contact = contact;
+
+            this.editFirstName = this.contact.firstName;
+            this.editLastName = this.contact.lastName;
+            this.editPhone = this.contact.phone;
 
             this.instance.show();
         },
 
-        hide() {
+        hideEditingForm() {
             this.instance.hide();
         },
+
+        saveEditContact() {
+            if (this.editFirstName.length === 0) {            
+                this.isFirstNameFieldValid = true;
+                return;//valid...
+            }
+
+            this.contact.firstName = this.editFirstName;
+            this.contact.lastName = this.editLastName;
+            this.contact.phone = this.editPhone;
+
+            this.$emit("save", this.contact);
+            this.hideEditingForm();// Запрос на сервер!
+        }
     },
 
     template: `
@@ -401,11 +394,11 @@ app.component("editing-modal", {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                     </div>
                     <div class="modal-body">
-                        <form>                                 
+                        <form @submit.prevent="saveEditContact">
                             <div class="mb-2">
                                 <label for="edit-first-name-field" class="form-label-sm">Имя</label>
                                 <input v-model.trim="editFirstName"
-                                       v-bind:class="{'is-invalid': false, 'is-valid': false}"
+                                       v-bind:class="{'is-invalid': isFirstNameFieldValid}"
                                        id="edit-first-name-field"
                                        type="text"
                                        class="form-control form-control-sm"                                        
@@ -416,7 +409,7 @@ app.component("editing-modal", {
                             <div class="mb-2">
                             <label for="edit-last-name-field" class="form-label-sm">Фамилия</label>
                                 <input v-model.trim="editLastName"
-                                       v-bind:class="{'is-invalid': false, 'is-valid':false}"
+                                       v-bind:class="{'is-invalid': isLastNameFieldValid}"
                                        id="edit-last-name-field"
                                        type="text"
                                        class="form-control form-control-sm"                                        
@@ -427,19 +420,21 @@ app.component("editing-modal", {
                             <div class="mb-2">
                                 <label for="edit-phone-field" class="form-label-sm">Телефон</label>
                                 <input v-model.trim="editPhone"
-                                       v-bind:class="{'is-invalid': false, 'is-valid': false}"                                        
+                                       v-bind:class="{'is-invalid': isPhoneFieldValid}"
                                        type="text"
                                        class="form-control form-control-sm"
                                        id="edit-phone-field"
                                        autocomplete="off">
                                 <div v-text="editPhoneInvalidText" class="invalid-feedback"></div>
-                            </div>                                                                          
+                            </div>
+
+                            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
                         </form>
                     </div>
 
                     <div class="modal-footer">
-                        <button @click="hide" type="button" class="btn btn-primary">Сохранить</button>
-                        <button @click="hide" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button @click="saveEditContact" type="button" class="btn btn-primary">Сохранить</button>
+                        <button @click="hideEditingForm" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                     </div>
                 </div>
             </div>
