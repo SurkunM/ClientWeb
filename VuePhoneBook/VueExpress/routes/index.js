@@ -17,26 +17,34 @@ router.get("/api/contacts", function (request, response) {
 router.post("/api/contacts", function (request, response) {
     const contact = request.body;
 
-    if (!contact.firstName) {
+    if (contact.firstName.length === 0) {
         response.send({
             success: false,
-            message: "Необходимо указать имя"
+            message: "Не указано имя контакта"
         });
         return;
     }
 
-    if (!contact.lastName) {
+    if (contact.lastName.length === 0) {
         response.send({
             success: false,
-            message: "Необходимо указать фамилию"
+            message: "Не указана фамилия контакта"
         });
         return;
     }
 
-    if (!contact.phone) {
+    if (contact.phone.length === 0) {
         response.send({
             success: false,
-            message: "Необходимо указать телефон"
+            message: "Не указан телефон контакта"
+        });
+        return;
+    }
+
+    if (isNaN(Number(contact.phone))) {
+        response.send({
+            success: false,
+            message: "Не верный формат для поля телефон"
         });
         return;
     }
@@ -46,7 +54,7 @@ router.post("/api/contacts", function (request, response) {
     if (contacts.some(c => c.phone.toUpperCase() === phone)) {
         response.send({
             success: false,
-            message: "Такой телефон уже существует"
+            message: "Контакт с таким телефоном уже существует"
         });
         return;
     }
@@ -64,26 +72,34 @@ router.post("/api/contacts", function (request, response) {
 router.put("/api/contacts", function (request, response) {
     const contact = request.body;
 
-    if (!contact.firstName) {
+    if (contact.firstName.length === 0) {
         response.send({
             success: false,
-            message: "Необходимо указать имя"
+            message: "Не указано имя контакта"
         });
         return;
     }
 
-    if (!contact.lastName) {
+    if (contact.lastName.length === 0) {
         response.send({
             success: false,
-            message: "Необходимо указать фамилию"
+            message: "Не указана фамилия контакта"
         });
         return;
     }
 
-    if (!contact.phone) {
+    if (contact.phone.length === 0) {
         response.send({
             success: false,
-            message: "Необходимо указать телефон"
+            message: "Не указан телефон контакта"
+        });
+        return;
+    }
+
+    if (isNaN(Number(contact.phone))) {
+        response.send({
+            success: false,
+            message: "Не верный формат для поля телефон"
         });
         return;
     }
@@ -93,23 +109,22 @@ router.put("/api/contacts", function (request, response) {
     if (contacts.some(c => c.id !== contact.id && c.phone.toUpperCase() === phone)) {
         response.send({
             success: false,
-            message: "Такой телефон уже существует"
+            message: "Контакт с таким телефоном уже существует"
         });
         return;
     }
 
-    const contactIndex = contact.findIndex(c => c.id === contact.id);
+    const contactIndex = contacts.findIndex(c => c.id === contact.id);
 
     if (contactIndex < 0) {
         response.send({
             success: false,
             message: "Контакт не найден"
         });
-
         return;
     }
 
-    contact[contactIndex] = contact;
+    contacts[contactIndex] = contact;
 
     response.send({
         success: true,

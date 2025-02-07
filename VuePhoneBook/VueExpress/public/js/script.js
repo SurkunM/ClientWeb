@@ -19,6 +19,10 @@ class PhoneBookService {
         return axios.delete(url, data).then(response => response.data);
     }
 
+    edit(url, data) {
+        return axios.put(url, data).then(response => response.data)
+    }
+
     getContacts(term) {
         return this.get(this.baseUrl, { term });
     }
@@ -29,6 +33,10 @@ class PhoneBookService {
 
     deleteContact(id) {
         return this.delete(`${this.baseUrl}/${id}`);
+    }
+
+    editContact(contact) {
+        return this.edit(this.baseUrl, contact);
     }
 }
 
@@ -111,38 +119,36 @@ const app = Vue.createApp({
             this.isPhoneFieldComplete = false;
         },
 
-        checkNewContactFieldsInvalid() {
-            const firstName = this.firstName;
-            const lastName = this.lastName;
-            const phone = this.phone;
-
+        checkFormFieldsInvalid() {
             this.isFirstNameFieldValid = false;
             this.isLastNameFieldValid = false;
             this.isPhoneFieldValid = false;
 
-            if (firstName.length === 0) {
+            let isInvalidFields = false;
+
+            if (this.firstName.length === 0) {
                 this.isFirstNameFieldValid = true;
-                return true;
+                isInvalidFields = true;
             }
 
-            if (lastName.length === 0) {
+            if (this.lastName.length === 0) {
                 this.isLastNameFieldValid = true;
-                return true;
+                isInvalidFields = true;
             }
 
-            if (phone.length === 0) {
-                this.phoneInvalidText = "Заполните поле Телефон";
+            if (this.phone.length === 0) {
+                this.phoneInvalidText = "Заполните поле телефон";
                 this.isPhoneFieldValid = true;
-                return true;
+                isInvalidFields = true;
             }
 
-            if (isNaN(Number(phone))) {
-                this.phoneInvalidText = "Не верный формат для поля Телефон";
+            if (isNaN(Number(this.phone))) {
+                this.phoneInvalidText = "Не верный формат для поля телефон";
                 this.isPhoneFieldValid = true;
-                return true;
+                isInvalidFields = true;
             }
 
-            return false;
+            return isInvalidFields;
         },
 
         checkExistPhone(id, phone) {
@@ -162,12 +168,12 @@ const app = Vue.createApp({
                     this.setShowContactsCount();
                 })
                 .catch(() => {
-                    alert("Get contacts ERORR");//TODO: ред. сервер. message!
+                    alert("Get contacts ERROR");
                 });
         },
 
         createContact() {
-            if (this.checkNewContactFieldsInvalid()) {
+            if (this.checkFormFieldsInvalid()) {
                 return;
             }
 
@@ -187,18 +193,22 @@ const app = Vue.createApp({
             this.service.createContact(contact)
                 .then(response => {
                     if (!response.success) {
-                        alert(response.message);
+                        if (this.checkFormFieldsInvalid()) {
+                            return;
+                        }
+
+                        if (this.checkExistPhone(0, this.phone)) {
+                            return;
+                        }
+                    } else {
+                        this.getContacts();
+                        this.clearFormsFields();
+                        alert("Контакт успешно создан!");
                     }
                 })
                 .catch(() => {
-                    alert("Не создано");
+                    alert("Ошибка! Попробуйте создать контакт еще раз");
                 });
-
-            this.getContacts();
-
-            this.id++;
-
-            this.clearFormsFields();
         },
 
         showSingleDeleteConfirm(contact) {
@@ -212,18 +222,19 @@ const app = Vue.createApp({
                     if (!response.success) {
                         alert(response.message);
                         this.setShowContactsCount();
+                    } else {
+                        this.getContacts();
+                        alert("Контакт успешно удален!");
                     }
-
-                    this.getContacts();
                 })
                 .catch(() => {
-                    alert("Не удалось удалить");
+                    alert("Ошибка! Не удалось удалить");
                 });
 
             this.$refs.confirmSingleDeleteModal.hide();
         },
 
-        deleteSelectedContacts() {// Модальное окно!
+        deleteSelectedContacts() {
             this.contacts = this.contacts.filter(c => !c.isChecked);;
 
             this.setShowContactsCount();
@@ -232,19 +243,31 @@ const app = Vue.createApp({
 
         showEditContactModal(contact) {
             this.selectedContact = contact;
-            this.$refs.contactEditingModal.showEditingForm(contact);
+            this.$refs.contactEditingModal.showEditingForm(this.selectedContact);
         },
 
-        editContact() {// Через модальное окно!
-            this.firstName = contact.firstName;
-            this.lastName = contact.lastName;
-            this.phone = contact.phone;
+        checkEditedContactPhone(id, phone) {
+            if (this.contacts.some(c => c.id !== id && c.phone === phone)) {
+                this.$refs.contactEditingModal.setExistPhoneInvalid();
+            }
         },
 
-        saveEditContact(editedContact) {           
-            const contact = editedContact;            
+        saveEditContact(editedContact) {
+            this.service.editContact(editedContact)
+                .then(response => {
+                    if (!response.success) {
+                        this.$refs.contactEditingModal.checkEiditFormFieldsInvalid();
+                        this.$refs.contactEditingModal.checkEditingFormPhoneExist();
+                    } else {
+                        this.getContacts();
+                        this.$refs.contactEditingModal.hideEditingForm();
+                        alert("Контакт успешно изменен");
+                    }
 
-            this.contact          
+                })
+                .catch(() => {
+                    alert("Ошибка редактирования! Попробуйие еще раз");
+                })
         },
 
         setShowContactsCount() {
@@ -276,7 +299,7 @@ const app = Vue.createApp({
             }
         },
 
-        selectAllCheckbox() {// Чекбоксы у контактов на сервере!
+        selectAllCheckbox() {//TODO: Чекбоксы у контактов на сервере!
             this.contacts.forEach(c => {
                 if (c.isShow) {
                     c.isChecked = this.isChecked;
@@ -339,11 +362,13 @@ app.component("editing-modal", {
             instance: null,
             contact: null,
 
+            editContactId: 0,
             editFirstName: "",
             editLastName: "",
             editPhone: "",
 
             editPhoneInvalidText: "",
+            isPhoneExist: false,
 
             isFirstNameFieldValid: false,
             isLastNameFieldValid: false,
@@ -359,6 +384,11 @@ app.component("editing-modal", {
         showEditingForm(contact) {
             this.contact = contact;
 
+            this.isFirstNameFieldValid = false;
+            this.isLastNameFieldValid = false;
+            this.isPhoneFieldValid = false;
+
+            this.editContactId = this.contact.id
             this.editFirstName = this.contact.firstName;
             this.editLastName = this.contact.lastName;
             this.editPhone = this.contact.phone;
@@ -370,10 +400,61 @@ app.component("editing-modal", {
             this.instance.hide();
         },
 
-        saveEditContact() {
-            if (this.editFirstName.length === 0) {            
+        setExistPhoneInvalid() {
+            this.editPhoneInvalidText = "Контакт с таким номером уже сущевстует";
+
+            this.isPhoneFieldValid = true;
+            this.isPhoneExist = true;
+        },
+
+        checkEiditFormFieldsInvalid() {
+            this.isFirstNameFieldValid = false;
+            this.isLastNameFieldValid = false;
+            this.isPhoneFieldValid = false;
+
+            let isFieldsInvalid = false;
+
+            if (this.editFirstName.length === 0) {
                 this.isFirstNameFieldValid = true;
-                return;//valid...
+                isFieldsInvalid = true;
+            }
+
+            if (this.editLastName.length === 0) {
+                this.isLastNameFieldValid = true;
+                isFieldsInvalid = true;
+            }
+
+            if (this.editPhone.length === 0) {
+                this.isPhoneFieldValid = true;
+                this.editPhoneInvalidText = "Заполните поле телефон";
+                isFieldsInvalid = true;
+            }
+
+            if (isNaN(Number(this.editPhone))) {
+                this.editPhoneInvalidText = "Не верный формат для поля телефон";
+                this.isPhoneFieldValid = true;
+                isFieldsInvalid = true;
+            }
+
+            return isFieldsInvalid;
+        },
+
+        checkEditingFormPhoneExist() {
+            this.isPhoneExist = false;
+            this.isPhoneFieldValid = false;
+
+            this.$emit("phone-check", this.editContactId, this.editPhone);
+        },
+
+        saveEditing() {
+            if (this.checkEiditFormFieldsInvalid()) {
+                return;
+            }
+
+            this.checkEditingFormPhoneExist();
+
+            if (this.isPhoneExist) {
+                return;
             }
 
             this.contact.firstName = this.editFirstName;
@@ -381,7 +462,6 @@ app.component("editing-modal", {
             this.contact.phone = this.editPhone;
 
             this.$emit("save", this.contact);
-            this.hideEditingForm();// Запрос на сервер!
         }
     },
 
@@ -394,7 +474,7 @@ app.component("editing-modal", {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                     </div>
                     <div class="modal-body">
-                        <form @submit.prevent="saveEditContact">
+                        <form @submit.prevent="saveEditing">
                             <div class="mb-2">
                                 <label for="edit-first-name-field" class="form-label-sm">Имя</label>
                                 <input v-model.trim="editFirstName"
@@ -433,7 +513,7 @@ app.component("editing-modal", {
                     </div>
 
                     <div class="modal-footer">
-                        <button @click="saveEditContact" type="button" class="btn btn-primary">Сохранить</button>
+                        <button @click="saveEditing" type="button" class="btn btn-primary">Сохранить</button>
                         <button @click="hideEditingForm" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                     </div>
                 </div>
