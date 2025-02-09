@@ -6,9 +6,7 @@ class PhoneBookService {
     }
 
     get(url, params) {
-        return axios.get(url, {
-            params
-        }).then(response => response.data);
+        return axios.get(url, { params }).then(response => response.data);
     }
 
     post(url, data) {
@@ -19,8 +17,12 @@ class PhoneBookService {
         return axios.delete(url, data).then(response => response.data);
     }
 
-    edit(url, data) {
-        return axios.put(url, data).then(response => response.data)
+    put(url, data) {
+        return axios.put(url, data).then(response => response.data);
+    }
+
+    patch(url, data) {
+        return axios.patch(url, data).then(response => response.data);
     }
 
     getContacts(term) {
@@ -35,17 +37,20 @@ class PhoneBookService {
         return this.delete(`${this.baseUrl}/${id}`);
     }
 
+    deleteSelectedContacts(contacts) {
+        return this.patch(this.baseUrl, contacts);
+    }
+
     editContact(contact) {
-        return this.edit(this.baseUrl, contact);
+        return this.put(this.baseUrl, contact);
     }
 }
 
 const app = Vue.createApp({
     data() {
         return {
-            contacts: [],
             service: new PhoneBookService(),
-            term: "",
+            contacts: [],
 
             firstName: "",
             lastName: "",
@@ -65,8 +70,16 @@ const app = Vue.createApp({
 
             isSearchModeActive: false,
             searchResultText: "",
+            term: "",
 
-            isChecked: false
+            isSuccessAlertShow: false,
+            successAlertText: "",
+
+            isErrorAlertShow: false,
+            errorAlertText: "",
+
+            isAllChecked: false,
+            checkedContactsCount: 0
         };
     },
 
@@ -75,7 +88,25 @@ const app = Vue.createApp({
     },
 
     methods: {
-        checkContactFirstNameFieldComplete() {
+        showSuccessAlert(text) {
+            this.successAlertText = text;
+            this.isSuccessAlertShow = true;
+            setTimeout(() => {
+                this.successAlertText = "";
+                this.isSuccessAlertShow = false
+            }, 1500);
+        },
+
+        showErrorAlert(text) {
+            this.errorAlertText = text;
+            this.isErrorAlertShow = true;
+            setTimeout(() => {
+                this.errorAlertText = "";
+                this.isErrorAlertShow = false
+            }, 1500);
+        },
+
+        checkFirstNameFieldComplete() {
             if (this.firstName.length > 0) {
                 this.isFirstNameFieldValid = false;
                 this.isFirstNameFieldComplete = true;
@@ -85,7 +116,7 @@ const app = Vue.createApp({
             }
         },
 
-        checkContactLastNameFieldComplete() {
+        checkLastNameFieldComplete() {
             if (this.lastName.length > 0) {
                 this.isLastNameFieldValid = false;
                 this.isLastNameFieldComplete = true;
@@ -95,7 +126,7 @@ const app = Vue.createApp({
             }
         },
 
-        checkContactPhoneFieldComplete() {
+        checkPhoneFieldComplete() {
             if (this.phone.length > 0) {
                 this.isPhoneFieldValid = false;
                 this.isPhoneFieldComplete = true;
@@ -109,6 +140,8 @@ const app = Vue.createApp({
             this.firstName = "";
             this.lastName = "";
             this.phone = "";
+
+            this.isAllChecked = false;
 
             this.isFirstNameFieldValid = false;
             this.isLastNameFieldValid = false;
@@ -165,10 +198,13 @@ const app = Vue.createApp({
             this.service.getContacts(this.term.trim())
                 .then(contacts => {
                     this.contacts = contacts;
-                    this.setShowContactsCount();
+
+                    if (this.isSearchModeActive) {
+                        this.setShowContactsCount();
+                    }
                 })
                 .catch(() => {
-                    alert("Get contacts ERROR");
+                    this.showErrorAlert("При создании контакта произошла ошибка!");
                 });
         },
 
@@ -203,11 +239,11 @@ const app = Vue.createApp({
                     } else {
                         this.getContacts();
                         this.clearFormsFields();
-                        alert("Контакт успешно создан!");
+                        this.showSuccessAlert("Контакт успешно создан!");
                     }
                 })
                 .catch(() => {
-                    alert("Ошибка! Попробуйте создать контакт еще раз");
+                    this.showErrorAlert("Ошибка! Попробуйте создать контакт еще раз");
                 });
         },
 
@@ -216,29 +252,50 @@ const app = Vue.createApp({
             this.$refs.confirmSingleDeleteModal.show();
         },
 
-        deleteContact() {
+        deleteSingleContact() {
             this.service.deleteContact(this.selectedContact.id)
-                .then(response => {
-                    if (!response.success) {
-                        alert(response.message);
+                .then(() => {
+                    this.getContacts();
+                    this.showSuccessAlert("Контакт успешно удален!");
+
+                    if (this.isSearchModeActive) {
                         this.setShowContactsCount();
-                    } else {
-                        this.getContacts();
-                        alert("Контакт успешно удален!");
                     }
                 })
                 .catch(() => {
-                    alert("Ошибка! Не удалось удалить");
+                    this.showErrorAlert("Ошибка! Не удалось удалить");
+                })
+                .finally(() => {
+                    this.$refs.confirmSingleDeleteModal.hide();
                 });
-
-            this.$refs.confirmSingleDeleteModal.hide();
         },
 
-        deleteSelectedContacts() {
-            this.contacts = this.contacts.filter(c => !c.isChecked);;
+        showAllSelectedDeleteConfirm() {
+            this.$refs.confirmAllSelectedDeleteModal.deletedContactsCount(this.checkedContactsCount);
+            this.$refs.confirmAllSelectedDeleteModal.show();
+        },
 
-            this.setShowContactsCount();
-            this.isChecked = false;
+        deleteAllSelectedContacts() {
+            this.service.deleteSelectedContacts(this.contacts)
+                .then(response => {
+                    if (!response.success) {
+                        alert(response.message);
+                    } else {
+                        this.showSuccessAlert("Контакты успешно удалены!");                        
+                        this.selectAllCheckbox(false);
+
+                        if (this.isSearchModeActive) {
+                            this.setShowContactsCount();
+                        }
+                    }
+                })
+                .catch(() => {
+                    this.showErrorAlert("Ошибка! Не удалось удалить");
+                })
+                .finally(() => {
+                    this.getContacts();
+                    this.$refs.confirmAllSelectedDeleteModal.hide();
+                });
         },
 
         showEditContactModal(contact) {
@@ -261,12 +318,11 @@ const app = Vue.createApp({
                     } else {
                         this.getContacts();
                         this.$refs.contactEditingModal.hideEditingForm();
-                        alert("Контакт успешно изменен");
+                        this.showSuccessAlert("Контакт успешно изменен");
                     }
-
                 })
                 .catch(() => {
-                    alert("Ошибка редактирования! Попробуйие еще раз");
+                    this.showErrorAlert("Ошибка редактирования! Попробуйие еще раз");
                 })
         },
 
@@ -288,23 +344,33 @@ const app = Vue.createApp({
 
         cancelContactsSeatch() {
             if (this.isSearchModeActive) {
-
                 this.term = "";
-                this.getContacts();
 
-                this.isChecked = false;
-                this.selectAllCheckbox();
+                this.getContacts();
+                this.selectAllCheckbox(false);
 
                 this.isSearchModeActive = false;
             }
         },
 
-        selectAllCheckbox() {//TODO: Чекбоксы у контактов на сервере!
+        checkSelected(isChecked) {
+            if (isChecked) {
+                this.checkedContactsCount++;
+            } else {
+                this.checkedContactsCount--;
+            }
+        },
+
+        selectAllCheckbox(isCheck) {
+            this.isAllChecked = isCheck;
+
             this.contacts.forEach(c => {
                 if (c.isShow) {
-                    c.isChecked = this.isChecked;
+                    c.isChecked = isCheck;
                 }
             });
+
+            this.checkedContactsCount = this.contacts.filter(c => c.isChecked).length;
         }
     }
 });
@@ -322,19 +388,12 @@ app.component("phone-book-item", {
         }
     },
 
-    data() {
-        return {
-            isEditing: false,
-            isEditingTextInvalid: false,
-        }
-    },
-
     template: `
         <teleport to="#tbody">
             <tr>
                 <td>
                     <label class="d-flex justify-content-sm-center">
-                        <input v-model="contact.isChecked" class="form-check-input" type="checkbox">
+                        <input v-model="contact.isChecked" @change="$emit('selected-contact', contact.isChecked)" class="form-check-input" type="checkbox">
                     </label>
                 </td>
                 <td v-text="index + 1"></td>
@@ -407,6 +466,24 @@ app.component("editing-modal", {
             this.isPhoneExist = true;
         },
 
+        checkEditingFirstNameField() {
+            if (this.editFirstName.length > 0) {
+                this.isFirstNameFieldValid = false;
+            }
+        },
+
+        checkEditingLastNameField() {
+            if (this.editLastName.length > 0) {
+                this.isLastNameFieldValid = false;
+            }
+        },
+
+        checkEditingPhoneField() {
+            if (this.editPhone.length > 0) {
+                this.isPhoneFieldValid = false;
+            }
+        },
+
         checkEiditFormFieldsInvalid() {
             this.isFirstNameFieldValid = false;
             this.isLastNameFieldValid = false;
@@ -443,7 +520,7 @@ app.component("editing-modal", {
             this.isPhoneExist = false;
             this.isPhoneFieldValid = false;
 
-            this.$emit("phone-check", this.editContactId, this.editPhone);
+            this.$emit("check-phone", this.editContactId, this.editPhone);
         },
 
         saveEditing() {
@@ -466,11 +543,11 @@ app.component("editing-modal", {
     },
 
     template: `
-        <div ref="editingModal" class="modal fade" id="exampleModal" tabindex="-1"  data-bs-backdrop="static" data-bs-keyboard="false">
+        <div ref="editingModal" class="modal fade" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5">Редактирование контакта</h1>
+                        <h1 class="modal-title fs-5">Редактировать контакт</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                     </div>
                     <div class="modal-body">
@@ -478,7 +555,8 @@ app.component("editing-modal", {
                             <div class="mb-2">
                                 <label for="edit-first-name-field" class="form-label-sm">Имя</label>
                                 <input v-model.trim="editFirstName"
-                                       v-bind:class="{'is-invalid': isFirstNameFieldValid}"
+                                       :class="{'is-invalid': isFirstNameFieldValid}"
+                                       @change="checkEditingFirstNameField"
                                        id="edit-first-name-field"
                                        type="text"
                                        class="form-control form-control-sm"                                        
@@ -489,7 +567,8 @@ app.component("editing-modal", {
                             <div class="mb-2">
                             <label for="edit-last-name-field" class="form-label-sm">Фамилия</label>
                                 <input v-model.trim="editLastName"
-                                       v-bind:class="{'is-invalid': isLastNameFieldValid}"
+                                       :class="{'is-invalid': isLastNameFieldValid}"
+                                       @change="checkEditingLastNameField"
                                        id="edit-last-name-field"
                                        type="text"
                                        class="form-control form-control-sm"                                        
@@ -500,7 +579,8 @@ app.component("editing-modal", {
                             <div class="mb-2">
                                 <label for="edit-phone-field" class="form-label-sm">Телефон</label>
                                 <input v-model.trim="editPhone"
-                                       v-bind:class="{'is-invalid': isPhoneFieldValid}"
+                                       :class="{'is-invalid': isPhoneFieldValid}"
+                                       @change="checkEditingPhoneField"
                                        type="text"
                                        class="form-control form-control-sm"
                                        id="edit-phone-field"
@@ -562,15 +642,16 @@ app.component("single-delete-modal", {
     `
 });
 
-app.component("all-delete-modal", {
+app.component("all-selected-delete-modal", {
     data() {
         return {
-            instance: null
+            instance: null,
+            count: 0
         };
     },
 
     mounted() {
-        this.instance = new bootstrap.Modal(this.$refs.modal);
+        this.instance = new bootstrap.Modal(this.$refs.allSelectedDeleteModal);
     },
 
     methods: {
@@ -580,20 +661,24 @@ app.component("all-delete-modal", {
 
         hide() {
             this.instance.hide();
+        },
+
+        deletedContactsCount(count) {
+            this.count = count;
         }
     },
 
     template: `
-        <div ref="modal" class="modal fade" tabindex="-1">
+        <div ref="allSelectedDeleteModal" class="modal fade" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Подтвердите удаление</h5>
                         <button type="button" class="btn-close"@click="hide" aria-label="Закрыть"></button>
                     </div>
-                    <div class="modal-body">Вы действительно хотите удалить все выделенные заметки?</div>
+                    <div class="modal-body">Вы действительно хотите удалить все выделенные контакты? ({{ count }}) шт.</div>
                     <div class="modal-footer">
-                        <button @click="$emit('delete')" type="button" class="btn btn-danger">Удалить</button>
+                        <button @click="$emit('all-selected-delete')" type="button" class="btn btn-danger">Удалить</button>
                         <button @click="hide" type="button" class="btn btn-secondary">Отмена</button>
                     </div>
                 </div>

@@ -14,36 +14,26 @@
 </head>
 <body>
     <div v-cloak class="container" id="app">
-
-        <div class="row justify-content-center">
-            <div class="toast-container p-3 col-5" id="toastPlacement">
-                <div class="toast show bg-success  text-center">
+        <div class="toast-container p-3 top-0 start-50 translate-middle-x">
+            <div class="toast bg-success-subtle" v-bind:class="{'show': isSuccessAlertShow}" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
                     <div class="toast-body">
-                        <i class="bi bi-floppy me-2"></i>
-                        Успешно сохранен!
+                        <i class="bi bi-check-circle me-2"></i>
+                        <span v-text="successAlertText"></span>
                     </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть"></button>
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-end">
-            <div class="toast-container p-3 col-5" id="toastPlacement">
-                <div class="toast show bg-danger text-center">
+        <div class="toast-container p-3 top-0 start-50 translate-middle-x">
+            <div class="toast bg-danger-subtle" v-bind:class="{'show': isErrorAlertShow}" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
                     <div class="toast-body">
                         <i class="bi bi-x-circle me-2"></i>
-                        Ошибка ред!
+                        <span v-text="errorAlertText"></span>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row justify-content-start">
-            <div class="toast-container p-3 col-5" id="toastPlacement">
-                <div class="toast show bg-warning text-center">
-                    <div class="toast-body">
-                        <i class="bi bi-exclamation-circle me-2"></i>
-                             Попробуйте еще раз!                       
-                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть"></button>
                 </div>
             </div>
         </div>
@@ -62,8 +52,8 @@
                     <div class="mb-1">
                         <label for="first-name-field" class="form-label-sm">Имя</label>
                         <input v-model.trim="firstName"
-                               v-bind:class="{'is-invalid': isFirstNameFieldValid, 'is-valid': isFirstNameFieldComplete}"
-                               v-on:change="checkContactFirstNameFieldComplete"
+                               :class="{'is-invalid': isFirstNameFieldValid, 'is-valid': isFirstNameFieldComplete}"
+                               @change="checkFirstNameFieldComplete"
                                type="text"
                                class="form-control form-control-sm"
                                id="first-name-field"
@@ -74,8 +64,8 @@
                     <div class="mb-1">
                         <label for="last-name-field" class="form-label-sm">Фамилия</label>
                         <input v-model.trim="lastName"
-                               v-bind:class="{'is-invalid': isLastNameFieldValid, 'is-valid':isLastNameFieldComplete}"
-                               v-on:change="checkContactLastNameFieldComplete"
+                               :class="{'is-invalid': isLastNameFieldValid, 'is-valid':isLastNameFieldComplete}"
+                               @change="checkLastNameFieldComplete"
                                type="text"
                                class="form-control form-control-sm"
                                id="last-name-field"
@@ -86,8 +76,8 @@
                     <div class="mb-2">
                         <label for="phone-field" class="form-label-sm">Телефон</label>
                         <input v-model.trim="phone"
-                               v-bind:class="{'is-invalid': isPhoneFieldValid, 'is-valid': isPhoneFieldComplete}"
-                               v-on:change="checkContactPhoneFieldComplete"
+                               :class="{'is-invalid': isPhoneFieldValid, 'is-valid': isPhoneFieldComplete}"
+                               @change="checkPhoneFieldComplete"
                                type="text"
                                class="form-control form-control-sm"
                                id="phone-field"
@@ -102,13 +92,15 @@
             </div>
         </form>
 
-        <h2 class="h5 d-flex justify-content-center mb-3">Поиск</h2>
+        <h2 class="h5 text-center mb-3">Поиск</h2>
 
         <form @submit.prevent="searchContacts" class="row row-cols-lg-auto g-3 justify-content-center">
             <div class="col-lg-3">
                 <input v-model.trim="term" type="text" class="form-control" placeholder="Найти контакт">
                 <template v-if="isSearchModeActive">
-                    <div v-text="searchResultText" class="col badge bg-success text-wrap mt-2" style="width: 11rem;"></div>
+                    <div class="col-auto d-flex justify-content-center">
+                        <div v-text="searchResultText" class="badge bg-success text-wrap mt-2 mx-auto" style="width: 11rem;"></div>
+                    </div>
                 </template>
             </div>
             <div class="col-auto">
@@ -123,7 +115,7 @@
                     <tr>
                         <th>
                             <label class="d-flex justify-content-sm-center">
-                                <input v-model="isChecked" @change="selectAllCheckbox" class="form-check-input" type="checkbox">
+                                <input v-model="isAllChecked" @change="selectAllCheckbox(isAllChecked)" class="form-check-input" type="checkbox">
                             </label>
                         </th>
                         <th>№</th>
@@ -132,7 +124,7 @@
                         <th>Телефон</th>
                         <th>
                             <div class="d-flex justify-content-center">
-                                <button @click="deleteSelectedContacts" class="btn btn-danger">Удалить все</button>
+                                <button @click="showAllSelectedDeleteConfirm" :disabled="checkedContactsCount === 0" class="btn btn-danger">Удалить все</button>
                             </div>
                         </th>
                     </tr>
@@ -144,17 +136,18 @@
                                      :key="contact.id"
                                      v-show="contact.isShow"
                                      @contact-delete="showSingleDeleteConfirm"
-                                     @contact-edit="showEditContactModal">
+                                     @contact-edit="showEditContactModal"
+                                     @selected-contact="checkSelected">
                     </phone-book-item>
                 </tbody>
             </table>
         </div>
 
-        <editing-modal ref="contactEditingModal" @save="saveEditContact" @phone-сheck="checkEditedContactPhone"></editing-modal>
+        <editing-modal ref="contactEditingModal" @save="saveEditContact" @check-phone="checkEditedContactPhone"></editing-modal>
 
-        <single-delete-modal ref="confirmSingleDeleteModal" @delete="deleteContact"></single-delete-modal>
+        <single-delete-modal ref="confirmSingleDeleteModal" @delete="deleteSingleContact"></single-delete-modal>
 
-        <all-delete-modal ref="confirmAllDeleteModal" @delete="deleteContact"></all-delete-modal>
+        <all-selected-delete-modal ref="confirmAllSelectedDeleteModal" @all-selected-delete="deleteAllSelectedContacts"></all-selected-delete-modal>
     </div>
 </body>
 </html>

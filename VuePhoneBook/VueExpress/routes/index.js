@@ -139,11 +139,25 @@ router.delete("/api/contacts/:id", function (request, response) {
 
     if (contactIndex >= 0) {
         contacts.splice(contactIndex, 1);
-    } 
+    }
 
     response.send({
         success: true,
         message: null
+    });
+});
+
+router.patch("/api/contacts", function (request, response) {
+    const selectedContacts = request.body
+        .filter(c => c.isChecked);
+
+    selectedContacts.forEach(s => {
+        contacts.splice(contacts.findIndex(c => c.id === s.id), 1);
+    });
+
+    response.send({
+        success: true,
+        message: "All Delete"
     });
 });
 
