@@ -11,52 +11,40 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="container" id="app">
-        <div class="row justify-content-center mt-2">
-            <div class="col-xl-5">
-                <h1 class="display-4">TODO List</h1>
+    <div class="container d-flex justify-content-center" id="app">
+        <div>
+            <h1 class="display-4">TODO List</h1>
 
-                <form @submit.prevent="addTodItem" class="new-todo-form row g-2 align-items-center mb-4">
-                    <label class="label">Введите текст заметки</label>
+            <form @submit.prevent="addTodoItem" class="row g-1 align-items-center mb-4">
+                <span>Введите текст заметки</span>
 
-                    <div class="col">
-                        <input v-model.trim="newTodoItemText"
-                               v-bind:class="{ 'is-invalid': isNewTodoItemTextValid }"
-                               class="form-control"                               
-                               type="text">
-                        <div class="invalid-feedback">Необходимо задать значение</div>
-                    </div>
+                <div class="col">
+                    <input v-model.trim="newTodoItemText"
+                           :class="{ 'is-invalid': isNewTodoItemTextValid }"
+                           class="form-control"
+                           type="text">
+                    <div class="invalid-feedback">Необходимо задать значение</div>
+                </div>
 
-                    <div class="col-auto align-self-start">
-                        <button class="todo-form-button btn btn-primary" type="submit">
-                            Сохранить
-                        </button>
-                    </div>
-                </form>
+                <div class="col-auto align-self-start">
+                    <button class="btn btn-primary ms-1" type="submit">
+                        Сохранить
+                    </button>
+                </div>
+            </form>
 
-                <ul v-cloak class="todo-list list-unstyled">
-                    <todo-item v-for="(item, index) in items"
-                               v-bind:item="item"
-                               v-bind:index="index"
-                               v-bind:key="item.id"
-                               @delete="showDeleteTodoItemConfirm"
-                               @save="saveTodoItem">
-                    </todo-item>
-                </ul>
-            </div>
+            <ul v-cloak class="list-unstyled">
+                <todo-item v-for="(item, index) in items"
+                           :item="item"
+                           :index="index"
+                           :key="item.id"
+                           @delete="showDeleteTodoItemConfirm"
+                           @save="saveTodoItem">
+                </todo-item>
+            </ul>
         </div>
 
-        <delete-modal v-cloak ref="confirmDeleteModal">
-            <template v-slot:header>
-                Подтвердите удаление
-            </template>
-
-            <template v-slot:action-button>
-                <button @click="deleteTodoItem" type="button" class="btn btn-danger">Удалить</button>
-            </template>
-
-            <p>Вы действительно хотите удалить заметку?</p>
-        </delete-modal>
+        <delete-modal v-cloak ref="confirmDeleteModal" @delete-todo-item="deleteTodoItem"></delete-modal>
     </div>
 </body>
 </html>
