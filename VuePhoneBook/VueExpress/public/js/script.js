@@ -199,6 +199,10 @@ const app = Vue.createApp({
                 .then(contacts => {
                     this.contacts = contacts;
 
+                    if (this.isAllChecked) {
+                        this.selectAllCheckbox(true);
+                    }
+
                     if (this.isSearchModeActive) {
                         this.setShowContactsCount();
                     }
@@ -271,7 +275,7 @@ const app = Vue.createApp({
         },
 
         showAllSelectedDeleteConfirm() {
-            this.$refs.confirmAllSelectedDeleteModal.deletedContactsCount(this.checkedContactsCount);
+            this.$refs.confirmAllSelectedDeleteModal.setDeletedContactsCount(this.checkedContactsCount);
             this.$refs.confirmAllSelectedDeleteModal.show();
         },
 
@@ -279,10 +283,11 @@ const app = Vue.createApp({
             this.service.deleteSelectedContacts(this.contacts)
                 .then(response => {
                     if (!response.success) {
-                        alert(response.message);
+                        this.showErrorAlert(response.message);
                     } else {
-                        this.showSuccessAlert("Контакты успешно удалены!");                        
-                        this.selectAllCheckbox(false);
+                        this.showSuccessAlert("Контакты успешно удалены!");
+                        this.checkedContactsCount = 0;
+                        this.isAllChecked = false;
 
                         if (this.isSearchModeActive) {
                             this.setShowContactsCount();
@@ -339,6 +344,8 @@ const app = Vue.createApp({
                 return;
             }
 
+            this.checkedContactsCount = 0;
+            this.isAllChecked = false;
             this.getContacts();
         },
 
@@ -663,7 +670,7 @@ app.component("all-selected-delete-modal", {
             this.instance.hide();
         },
 
-        deletedContactsCount(count) {
+        setDeletedContactsCount(count) {
             this.count = count;
         }
     },
