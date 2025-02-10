@@ -12,7 +12,7 @@ const app = Vue.createApp({
     },
 
     methods: {
-        addTodItem() {
+        addTodoItem() {
             this.isNewTodoItemTextValid = false;
 
             const newTodoItemText = this.newTodoItemText;
@@ -25,7 +25,7 @@ const app = Vue.createApp({
             this.items.push({
                 id: this.newTodoItemId,
                 text: newTodoItemText
-            })
+            });
 
             this.newTodoItemId++;
             this.newTodoItemText = "";
@@ -65,7 +65,7 @@ app.component("todo-item", {
             isEditing: false,
             isEditingTextInvalid: false,
             editingText: this.item.text
-        }
+        };
     },
 
     methods: {
@@ -77,7 +77,7 @@ app.component("todo-item", {
         saveTodoItem() {
             this.isEditingTextInvalid = false;
 
-            const editingText = this.editingText
+            const editingText = this.editingText;
 
             if (editingText.length === 0) {
                 this.isEditingTextInvalid = true;
@@ -92,19 +92,19 @@ app.component("todo-item", {
     template: `
         <li class="mb-3">
             <template v-if="isEditing">
-                <form @submit.prevent="saveTodoItem" class="row">
+                <form @submit.prevent="saveTodoItem" class="row g-1">
                     <div class="col">
                         <input v-model.trim="editingText"
-                               v-bind:class="{ 'is-invalid': isEditingTextInvalid }"
+                               :class="{ 'is-invalid': isEditingTextInvalid }"
                                class="form-control"
                                type="text">
                         <div class="invalid-feedback">Необходимо задать значение</div>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-primary me-1" type="submit">
+                        <button class="btn btn-primary ms-1" type="submit">
                             Сохранить
                         </button>
-                        <button @click="isEditing = false" class="btn btn-secondary" type="button">
+                        <button @click="isEditing = false" class="btn btn-secondary ms-1" type="button">
                             Отмена
                         </button>
                     </div>
@@ -114,10 +114,10 @@ app.component("todo-item", {
                 <div class="row">
                     <div class="col todo-text" v-text="item.text"></div>
                     <div class="col-auto">
-                        <button @click="editTodoItem" class="btn btn-primary me-1" type="button">
+                        <button @click="editTodoItem" class="btn btn-primary ms-1" type="button">
                             Редактировать
                         </button>
-                        <button @click="$emit('delete', index)" class="btn btn-danger" type="button">
+                        <button @click="$emit('delete', index)" class="btn btn-danger ms-1" type="button">
                             Удалить
                         </button>
                     </div>
@@ -131,7 +131,7 @@ app.component("delete-modal", {
     data() {
         return {
             instance: null
-        }
+        };
     },
 
     mounted() {
@@ -153,17 +153,13 @@ app.component("delete-modal", {
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">
-                            <slot name="header"></slot>
-                        </h5>
-                        <button type="button" class="btn-close"@click="hide" aria-label="Закрыть"></button>
+                        <h5 class="modal-title">Подтвердите удаление</h5>
+                        <button type="button" class="btn-close" @click="hide" aria-label="Закрыть"></button>
                     </div>
-                    <div class="modal-body">
-                        <slot></slot>
-                    </div>
+                    <div class="modal-body">Вы действительно хотите удалить заметку?</div>
                     <div class="modal-footer">
+                        <button @click="$emit('delete-todo-item')" type="button" class="btn btn-danger">Удалить</button>
                         <button type="button" class="btn btn-secondary" @click="hide">Отмена</button>
-                        <slot name="action-button"></slot>
                     </div>
                 </div>
             </div>
