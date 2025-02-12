@@ -38,7 +38,7 @@
     console.log("Страны с максимальным количеством городов:");
     maxCitiesCountCountries.forEach(c => console.log(c.name));
 
-    function getCountriesNamesAndTotalPopulationDictionary(countries) {
+    function getCountriesNamesAndTotalPopulationsDictionary(countries) {
         const result = {};
 
         countries.forEach(country => {
@@ -48,11 +48,11 @@
         return result;
     }
 
-    const countriesNamesAndTotalPopulationDictionary = getCountriesNamesAndTotalPopulationDictionary(countries);
+    const countriesNamesAndTotalPopulationsDictionary = getCountriesNamesAndTotalPopulationsDictionary(countries);
 
     console.log("Коллекция стран и суммы населения городов:");
 
-    for (const countryName in countriesNamesAndTotalPopulationDictionary) {
-        console.log(`${countryName}: ${countriesNamesAndTotalPopulationDictionary[countryName]}`);
+    for (const countryName in countriesNamesAndTotalPopulationsDictionary) {
+        console.log(`${countryName}: ${countriesNamesAndTotalPopulationsDictionary[countryName]}`);
     }
 })();
