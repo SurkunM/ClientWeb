@@ -7,7 +7,7 @@ let currentContactId = 1;
 router.get("/api/contacts", function (request, response) {
     const term = (request.query.term || "").toUpperCase();
 
-    if (term.length === 0) {
+    if (term.trim().length === 0) {
         response.send(contacts);
     } else {
         response.send(contacts.filter(c => c.firstName.toUpperCase().includes(term)) || c.lastName.toUpperCase().includes(term) || c.phone.toUpperCase().includes(term));
@@ -17,34 +17,34 @@ router.get("/api/contacts", function (request, response) {
 router.post("/api/contacts", function (request, response) {
     const contact = request.body;
 
-    if (contact.firstName.length === 0) {
+    if (contact.firstName.trim().length === 0) {
         response.send({
             success: false,
-            message: "Не указано имя контакта"
+            message: "firstNameInvalidError"
         });
         return;
     }
 
-    if (contact.lastName.length === 0) {
+    if (contact.lastName.trim().length === 0) {
         response.send({
             success: false,
-            message: "Не указана фамилия контакта"
+            message: "lastNameInvalidError"
         });
         return;
     }
 
-    if (contact.phone.length === 0) {
+    if (contact.phone.trim().length === 0) {
         response.send({
             success: false,
-            message: "Не указан телефон контакта"
+            message: "phoneInvalidError"
         });
         return;
     }
 
-    if (isNaN(Number(contact.phone))) {
+    if (isNaN(Number(contact.phone.trim()))) {
         response.send({
             success: false,
-            message: "Не верный формат для поля телефон"
+            message: "phoneIncorrectFormatError"
         });
         return;
     }
@@ -54,7 +54,7 @@ router.post("/api/contacts", function (request, response) {
     if (contacts.some(c => c.phone.toUpperCase() === phone)) {
         response.send({
             success: false,
-            message: "Контакт с таким телефоном уже существует"
+            message: "phoneExistError"
         });
         return;
     }
@@ -72,44 +72,44 @@ router.post("/api/contacts", function (request, response) {
 router.put("/api/contacts", function (request, response) {
     const contact = request.body;
 
-    if (contact.firstName.length === 0) {
+    if (contact.firstName.trim().length === 0) {
         response.send({
             success: false,
-            message: "Не указано имя контакта"
+            message: "firstNameInvalidErrorа"
         });
         return;
     }
 
-    if (contact.lastName.length === 0) {
+    if (contact.lastName.trim().length === 0) {
         response.send({
             success: false,
-            message: "Не указана фамилия контакта"
+            message: "lastNameInvalidError"
         });
         return;
     }
 
-    if (contact.phone.length === 0) {
+    if (contact.phone.trim().length === 0) {
         response.send({
             success: false,
-            message: "Не указан телефон контакта"
+            message: "phoneInvalidError"
         });
         return;
     }
 
-    if (isNaN(Number(contact.phone))) {
+    if (isNaN(Number(contact.phone.trim()))) {
         response.send({
             success: false,
-            message: "Не верный формат для поля телефон"
+            message: "phoneIncorrectFormatError"
         });
         return;
     }
 
-    const phone = contact.phone.toUpperCase();
+    const phone = contact.phone.trim().toUpperCase();
 
     if (contacts.some(c => c.id !== contact.id && c.phone.toUpperCase() === phone)) {
         response.send({
             success: false,
-            message: "Контакт с таким телефоном уже существует"
+            message: "phoneExistError"
         });
         return;
     }
@@ -119,7 +119,7 @@ router.put("/api/contacts", function (request, response) {
     if (contactIndex < 0) {
         response.send({
             success: false,
-            message: "Контакт не найден"
+            message: "contactNotFoundError"
         });
         return;
     }
@@ -132,9 +132,24 @@ router.put("/api/contacts", function (request, response) {
     });
 });
 
+router.delete("/api/contacts", function (request, response) {
+    const contactsId = request.body;
+
+    contactsId.forEach(id => {
+        const index = contacts.findIndex(c => c.id === Number(id));
+            if (index >= 0) {
+                contacts.splice(index, 1);
+            }
+    });
+
+    response.send({
+        success: true,
+        message: null
+    });
+});
+
 router.delete("/api/contacts/:id", function (request, response) {
     const contactId = Number(request.params.id);
-
     const contactIndex = contacts.findIndex(c => c.id === contactId);
 
     if (contactIndex >= 0) {
@@ -144,20 +159,6 @@ router.delete("/api/contacts/:id", function (request, response) {
     response.send({
         success: true,
         message: null
-    });
-});
-
-router.patch("/api/contacts", function (request, response) {
-    const selectedContacts = request.body
-        .filter(c => c.isChecked);
-
-    selectedContacts.forEach(s => {
-        contacts.splice(contacts.findIndex(c => c.id === s.id), 1);
-    });
-
-    response.send({
-        success: true,
-        message: "All Delete"
     });
 });
 

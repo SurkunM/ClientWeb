@@ -57,8 +57,7 @@
     </div>
 </template>
 
-<script>
-    "use strict";
+<script>    
     import Modal from "bootstrap/js/dist/modal";
 
     export default {
@@ -73,7 +72,7 @@
                 editPhone: "",
 
                 editPhoneInvalidText: "",
-                isPhoneExist: false,
+                notEditedPhone: "",
 
                 isFirstNameFieldValid: false,
                 isLastNameFieldValid: false,
@@ -93,10 +92,10 @@
                 this.isLastNameFieldValid = false;
                 this.isPhoneFieldValid = false;
 
-                this.editContactId = this.contact.id
+                this.editContactId = this.contact.id;
                 this.editFirstName = this.contact.firstName;
                 this.editLastName = this.contact.lastName;
-                this.editPhone = this.contact.phone;
+                this.editPhone = this.contact.phone;                
 
                 this.instance.show();
             },
@@ -105,11 +104,10 @@
                 this.instance.hide();
             },
 
-            setExistPhoneInvalid() {
-                this.editPhoneInvalidText = "Контакт с таким номером уже сущевстует";
-
-                this.isPhoneFieldValid = true;
-                this.isPhoneExist = true;
+            setPhoneExistInvalid() {
+                this.editPhoneInvalidText = "Контакт с таким номером уже сущевстует";        
+                this.isPhoneFieldValid = true;         
+                this.contact.phone = this.notEditedPhone;                
             },
 
             checkEditingFirstNameField() {
@@ -130,10 +128,11 @@
                 }
             },
 
-            checkEiditFormFieldsInvalid() {
+            checkEditFormFieldsInvalid() {
                 this.isFirstNameFieldValid = false;
                 this.isLastNameFieldValid = false;
                 this.isPhoneFieldValid = false;
+                this.editPhoneInvalidText = "";
 
                 let isFieldsInvalid = false;
 
@@ -154,7 +153,7 @@
                 }
 
                 if (isNaN(Number(this.editPhone))) {
-                    this.editPhoneInvalidText = "Не верный формат для поля телефон";
+                    this.editPhoneInvalidText = "Неверный формат для поля телефон";
                     this.isPhoneFieldValid = true;
                     isFieldsInvalid = true;
                 }
@@ -162,23 +161,12 @@
                 return isFieldsInvalid;
             },
 
-            checkEditingFormPhoneExist() {
-                this.isPhoneExist = false;
-                this.isPhoneFieldValid = false;
-
-                this.$emit("check-phone", this.editContactId, this.editPhone);
-            },
-
             saveEditing() {
-                if (this.checkEiditFormFieldsInvalid()) {
+                if (this.checkEditFormFieldsInvalid()) {
                     return;
-                }
+                }                
 
-                this.checkEditingFormPhoneExist();
-
-                if (this.isPhoneExist) {
-                    return;
-                }
+                this.notEditedPhone = this.contact.phone;
 
                 this.contact.firstName = this.editFirstName;
                 this.contact.lastName = this.editLastName;

@@ -97,7 +97,7 @@
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary me-1">Поиск</button>
-                <button @click="cancelContactsSeatch" type="button" class="btn btn-secondary">Сбросить</button>
+                <button @click="cancelContactsSearch" type="button" class="btn btn-secondary">Сбросить</button>
             </div>
         </form>
 
@@ -126,7 +126,7 @@
                                      :contact="contact"
                                      :index="index"
                                      :key="contact.id"
-                                     v-show="contact.isShow"
+                                     v-show="contact.isShown"
                                      @contact-delete="showSingleDeleteConfirm"
                                      @contact-edit="showEditContactModal"
                                      @selected-contact="checkSelected">
@@ -143,21 +143,20 @@
     </div>
 </template>
 
-<script>   
-    "use strict";
-    import PhoneBookService from "../js/phoneBookService";   
+<script>      
+    import PhoneBookService from "../js/phoneBookService";
     import PhoneBookItem from "./PhoneBookItem.vue";
 
     import SingleDeleteModal from "./SingleDeleteModal.vue";
     import EditingModal from "./EditingModal.vue";
-    import AllSelectedDeleteModal from "./AllSelectedDeleteModal.vue";        
+    import AllSelectedDeleteModal from "./AllSelectedDeleteModal.vue";
 
-    export default {        
+    export default {
         components: {
             PhoneBookItem,
             EditingModal,
             SingleDeleteModal,
-            AllSelectedDeleteModal,
+            AllSelectedDeleteModal
         },
 
         data() {
@@ -170,6 +169,7 @@
                 phone: "",
 
                 phoneInvalidText: "",
+                phoneExistErrorCode: "phoneExistError",
 
                 isFirstNameFieldValid: false,
                 isLastNameFieldValid: false,
@@ -204,6 +204,7 @@
             showSuccessAlert(text) {
                 this.successAlertText = text;
                 this.isSuccessAlertShow = true;
+
                 setTimeout(() => {
                     this.successAlertText = "";
                     this.isSuccessAlertShow = false;
@@ -213,6 +214,7 @@
             showErrorAlert(text) {
                 this.errorAlertText = text;
                 this.isErrorAlertShow = true;
+
                 setTimeout(() => {
                     this.errorAlertText = "";
                     this.isErrorAlertShow = false;
@@ -233,8 +235,7 @@
                 if (this.lastName.length > 0) {
                     this.isLastNameFieldValid = false;
                     this.isLastNameFieldComplete = true;
-                }
-                else {
+                } else {
                     this.isLastNameFieldComplete = false;
                 }
             },
@@ -243,8 +244,7 @@
                 if (this.phone.length > 0) {
                     this.isPhoneFieldValid = false;
                     this.isPhoneFieldComplete = true;
-                }
-                else {
+                } else {
                     this.isPhoneFieldComplete = false;
                 }
             },
@@ -270,41 +270,31 @@
                 this.isLastNameFieldValid = false;
                 this.isPhoneFieldValid = false;
 
-                let isInvalidFields = false;
+                let isInvalid = false;
 
                 if (this.firstName.length === 0) {
                     this.isFirstNameFieldValid = true;
-                    isInvalidFields = true;
+                    isInvalid = true;
                 }
 
                 if (this.lastName.length === 0) {
                     this.isLastNameFieldValid = true;
-                    isInvalidFields = true;
+                    isInvalid = true;
                 }
 
                 if (this.phone.length === 0) {
                     this.phoneInvalidText = "Заполните поле телефон";
                     this.isPhoneFieldValid = true;
-                    isInvalidFields = true;
+                    isInvalid = true;
                 }
 
                 if (isNaN(Number(this.phone))) {
-                    this.phoneInvalidText = "Не верный формат для поля телефон";
+                    this.phoneInvalidText = "Неверный формат для поля телефон";
                     this.isPhoneFieldValid = true;
-                    isInvalidFields = true;
+                    isInvalid = true;
                 }
 
-                return isInvalidFields;
-            },
-
-            checkExistPhone(id, phone) {
-                if (this.contacts.some(c => c.id !== id && c.phone === phone)) {
-                    this.phoneInvalidText = "Контакт с таким номером уже существует";
-                    this.isPhoneFieldValid = true;
-                    return true;
-                }
-
-                return false;
+                return isInvalid;
             },
 
             getContacts() {
@@ -330,37 +320,33 @@
                     return;
                 }
 
-                if (this.checkExistPhone(0, this.phone)) {
-                    return;
-                }
-
                 const contact = {
                     firstName: this.firstName,
                     lastName: this.lastName,
                     phone: this.phone,
 
                     isChecked: false,
-                    isShow: true
-                }
+                    isShown: true
+                };
 
                 this.service.createContact(contact)
                     .then(response => {
                         if (!response.success) {
-                            if (this.checkFormFieldsInvalid()) {
-                                return;
+                            if (response.message === this.phoneExistErrorCode) {
+                                this.phoneInvalidText = "Контакт с таким телефоном уже существует!";
+                                this.isPhoneFieldValid = true;
+                            } else {
+                                this.showErrorAlert("Введены не коректные данные!");
                             }
-
-                            if (this.checkExistPhone(0, this.phone)) {
-                                return;
-                            }
-                        } else {
-                            this.getContacts();
-                            this.clearFormsFields();
-                            this.showSuccessAlert("Контакт успешно создан!");
+                            return;
                         }
+
+                        this.getContacts();
+                        this.clearFormsFields();
+                        this.showSuccessAlert("Контакт успешно создан!");
                     })
-                    .catch(() => {
-                        this.showErrorAlert("Ошибка! Попробуйте создать контакт еще раз");
+                    .catch(response => {
+                        this.showErrorAlert("При создании контакта произошла ошибка!");
                     });
             },
 
@@ -371,16 +357,16 @@
 
             deleteSingleContact() {
                 this.service.deleteContact(this.selectedContact.id)
-                    .then(() => {
+                    .then((response) => {
+                        const x = response.message;
                         this.getContacts();
                         this.showSuccessAlert("Контакт успешно удален!");
-
                         if (this.isSearchModeActive) {
                             this.setShowContactsCount();
                         }
                     })
                     .catch(() => {
-                        this.showErrorAlert("Ошибка! Не удалось удалить");
+                        this.showErrorAlert("Ошибка! Не удалось удалить контакт");
                     })
                     .finally(() => {
                         this.$refs.confirmSingleDeleteModal.hide();
@@ -393,22 +379,26 @@
             },
 
             deleteAllSelectedContacts() {
-                this.service.deleteSelectedContacts(this.contacts)
+                const selectedContactsId = this.contacts
+                    .filter(c => c.isChecked)
+                    .map(c => c.id);
+                this.service.deleteSelectedContacts(selectedContactsId)
                     .then(response => {
                         if (!response.success) {
                             this.showErrorAlert(response.message);
-                        } else {
-                            this.showSuccessAlert("Контакты успешно удалены!");
-                            this.checkedContactsCount = 0;
-                            this.isAllChecked = false;
+                            return;
+                        }
 
-                            if (this.isSearchModeActive) {
-                                this.setShowContactsCount();
-                            }
+                        this.showSuccessAlert("Контакты успешно удалены!");
+                        this.checkedContactsCount = 0;
+                        this.isAllChecked = false;
+
+                        if (this.isSearchModeActive) {
+                            this.setShowContactsCount();
                         }
                     })
                     .catch(() => {
-                        this.showErrorAlert("Ошибка! Не удалось удалить");
+                        this.showErrorAlert("Ошибка! Не удалось удалить контакты");
                     })
                     .finally(() => {
                         this.getContacts();
@@ -431,17 +421,21 @@
                 this.service.editContact(editedContact)
                     .then(response => {
                         if (!response.success) {
-                            this.$refs.contactEditingModal.checkEiditFormFieldsInvalid();
-                            this.$refs.contactEditingModal.checkEditingFormPhoneExist();
-                        } else {
-                            this.getContacts();
-                            this.$refs.contactEditingModal.hideEditingForm();
-                            this.showSuccessAlert("Контакт успешно изменен");
+                            if (response.message === this.phoneExistErrorCode) {
+                                this.$refs.contactEditingModal.setPhoneExistInvalid();
+                            } else {
+                                this.$refs.contactEditingModal.checkEditFormFieldsInvalid();
+                            }
+                            return;
                         }
+
+                        this.getContacts();
+                        this.$refs.contactEditingModal.hideEditingForm();
+                        this.showSuccessAlert("Контакт успешно изменен");
                     })
                     .catch(() => {
                         this.showErrorAlert("Ошибка редактирования! Попробуйие еще раз");
-                    })
+                    });
             },
 
             setShowContactsCount() {
@@ -462,7 +456,7 @@
                 this.getContacts();
             },
 
-            cancelContactsSeatch() {
+            cancelContactsSearch() {
                 if (this.isSearchModeActive) {
                     this.term = "";
 
@@ -481,12 +475,12 @@
                 }
             },
 
-            selectAllCheckbox(isCheck) {
-                this.isAllChecked = isCheck;
+            selectAllCheckbox(isChecked) {
+                this.isAllChecked = isChecked;
 
                 this.contacts.forEach(c => {
-                    if (c.isShow) {
-                        c.isChecked = isCheck;
+                    if (c.isShown) {
+                        c.isChecked = isChecked;
                     }
                 });
 
