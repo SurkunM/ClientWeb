@@ -34,6 +34,12 @@
                 type: Number,
                 required: true
             }
+        },
+
+        emits: {
+            "selected-contact": null,
+            "contact-edit": null,
+            "contact-delete": null
         }
     }
 </script>

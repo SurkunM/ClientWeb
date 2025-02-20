@@ -57,7 +57,7 @@
     </div>
 </template>
 
-<script>    
+<script>
     import Modal from "bootstrap/js/dist/modal";
 
     export default {
@@ -95,7 +95,7 @@
                 this.editContactId = this.contact.id;
                 this.editFirstName = this.contact.firstName;
                 this.editLastName = this.contact.lastName;
-                this.editPhone = this.contact.phone;                
+                this.editPhone = this.contact.phone;
 
                 this.instance.show();
             },
@@ -105,9 +105,9 @@
             },
 
             setPhoneExistInvalid() {
-                this.editPhoneInvalidText = "Контакт с таким номером уже сущевстует";        
-                this.isPhoneFieldValid = true;         
-                this.contact.phone = this.notEditedPhone;                
+                this.editPhoneInvalidText = "Контакт с таким номером уже сущевстует";
+                this.isPhoneFieldValid = true;
+                this.contact.phone = this.notEditedPhone;
             },
 
             checkEditingFirstNameField() {
@@ -164,7 +164,7 @@
             saveEditing() {
                 if (this.checkEditFormFieldsInvalid()) {
                     return;
-                }                
+                }
 
                 this.notEditedPhone = this.contact.phone;
 
@@ -174,6 +174,10 @@
 
                 this.$emit("save", this.contact);
             }
+        },
+
+        emits: {
+            "save": null
         }
     }
 </script>

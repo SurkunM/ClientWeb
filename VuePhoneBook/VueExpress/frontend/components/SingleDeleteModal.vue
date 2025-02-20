@@ -16,7 +16,7 @@
     </div>
 </template>
 
-<script>    
+<script>
     import Modal from "bootstrap/js/dist/modal";
 
     export default {
@@ -38,6 +38,10 @@
             hide() {
                 this.instance.hide();
             }
+        },
+
+        emits: {
+            "delete": null
         }
     }
 </script>

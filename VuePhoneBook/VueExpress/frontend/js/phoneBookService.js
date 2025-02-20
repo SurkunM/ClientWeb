@@ -33,8 +33,8 @@ export default class PhoneBookService {
         return PhoneBookService.#delete(`${this.baseUrl}/${id}`);
     }
 
-    deleteSelectedContacts(contacts) {
-        return PhoneBookService.#delete(this.baseUrl, contacts);
+    deleteSelectedContacts(contactsId) {
+        return PhoneBookService.#delete(this.baseUrl, contactsId);
     }
 
     editContact(contact) {

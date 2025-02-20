@@ -43,6 +43,10 @@
             setDeletedContactsCount(count) {
                 this.count = count;
             }
+        },
+
+        emits: {
+            "all-selected-delete": null
         }
     }
 </script>

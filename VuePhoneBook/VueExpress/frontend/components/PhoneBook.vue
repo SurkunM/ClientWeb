@@ -379,10 +379,10 @@
             },
 
             deleteAllSelectedContacts() {
-                const selectedContactsId = this.contacts
+                const contactsId = this.contacts
                     .filter(c => c.isChecked)
                     .map(c => c.id);
-                this.service.deleteSelectedContacts(selectedContactsId)
+                this.service.deleteSelectedContacts(contactsId)
                     .then(response => {
                         if (!response.success) {
                             this.showErrorAlert(response.message);
