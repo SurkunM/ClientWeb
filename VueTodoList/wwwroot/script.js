@@ -45,7 +45,7 @@ const app = Vue.createApp({
             this.items[itemIndex].text = newText;
         }
     }
-})
+});
 
 app.component("todo-item", {
     props: {
@@ -147,6 +147,8 @@ app.component("delete-modal", {
             this.instance.hide();
         }
     },
+
+    emits: ["delete-todo-item"],
 
     template: `
         <div ref="modal" class="modal fade" tabindex="-1">

@@ -11,37 +11,38 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="container d-flex justify-content-center" id="app">
-        <div>
-            <h1 class="display-4">TODO List</h1>
+    <div class="container" id="app">
+        <div class="row d-flex justify-content-center mt-2">
+            <div class="col-xl-6">
+                <h1 class="display-4">TODO List</h1>
 
-            <form @submit.prevent="addTodoItem" class="row g-1 align-items-center mb-4">
-                <span>Введите текст заметки</span>
+                <form @submit.prevent="addTodoItem" class="row g-1 align-items-center mb-4">
+                    <span>Введите текст заметки</span>
+                    <div class="col">
+                        <input v-model.trim="newTodoItemText"
+                               :class="{ 'is-invalid': isNewTodoItemTextValid }"
+                               class="form-control"
+                               type="text">
+                        <div class="invalid-feedback">Необходимо задать значение</div>
+                    </div>
 
-                <div class="col">
-                    <input v-model.trim="newTodoItemText"
-                           :class="{ 'is-invalid': isNewTodoItemTextValid }"
-                           class="form-control"
-                           type="text">
-                    <div class="invalid-feedback">Необходимо задать значение</div>
-                </div>
+                    <div class="col-auto align-self-start">
+                        <button class="btn btn-primary ms-1" type="submit">
+                            Сохранить
+                        </button>
+                    </div>
+                </form>
 
-                <div class="col-auto align-self-start">
-                    <button class="btn btn-primary ms-1" type="submit">
-                        Сохранить
-                    </button>
-                </div>
-            </form>
-
-            <ul v-cloak class="list-unstyled">
-                <todo-item v-for="(item, index) in items"
-                           :item="item"
-                           :index="index"
-                           :key="item.id"
-                           @delete="showDeleteTodoItemConfirm"
-                           @save="saveTodoItem">
-                </todo-item>
-            </ul>
+                <ul v-cloak class="list-unstyled">
+                    <todo-item v-for="(item, index) in items"
+                               :item="item"
+                               :index="index"
+                               :key="item.id"
+                               @delete="showDeleteTodoItemConfirm"
+                               @save="saveTodoItem">
+                    </todo-item>
+                </ul>
+            </div>
         </div>
 
         <delete-modal v-cloak ref="confirmDeleteModal" @delete-todo-item="deleteTodoItem"></delete-modal>
