@@ -32,8 +32,7 @@
     });
 
     phoneBookFormFields.focus(function (e) {
-        $(e.target).removeClass("is-invalid");
-        $(e.target).removeClass("is-valid");
+        $(e.target).removeClass("is-invalid").removeClass("is-valid");
     });
 
     function setFoundItemsCount() {
@@ -43,6 +42,7 @@
 
     searchForm.submit(function (e) {
         e.preventDefault();
+
         const searchText = searchField.val().trim().toLocaleLowerCase();
 
         if (searchText.length === 0) {
@@ -51,7 +51,7 @@
 
         isSearchModeActive = true;
 
-        if ($(":checked").length > 0) {
+        if (phoneBookTBody.find(":checked").length > 0) {
             selectAllItemsCheckbox.prop("checked", false);
             selectAllItemsCheckbox.triggerHandler("change");
         }
@@ -88,7 +88,7 @@
     function setDisabledAllSelectedDeleteButton() {
         allSelectedDeleteButton.prop("disabled", false);
 
-        if ($(":checked").length === 0) {
+        if (phoneBookTBody.find(":checked").length === 0) {
             allSelectedDeleteButton.prop("disabled", true);
         }
     }
@@ -272,12 +272,10 @@
                 const editingFormFields = $(".editing-text-field");
 
                 editingFormFields.focus(function (e) {
-                    $(e.target).removeClass("is-invalid");
-                    $(e.target).removeClass("is-valid");
+                    $(e.target).removeClass("is-invalid").removeClass("is-valid");
                 });
 
-                editingFormFields.removeClass("is-invalid");
-                editingFormFields.removeClass("is-valid");
+                editingFormFields.removeClass("is-invalid").removeClass("is-valid");
 
                 confirmEditingDialog.find(".editing-dialog-form")
                     .submit(function (e) {
