@@ -1,13 +1,13 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
 const contacts = [];
 let currentContactId = 1;
 
 router.get("/api/contacts", function (request, response) {
-    const term = (request.query.term || "").toUpperCase();
+    const term = (request.query.term || "").toUpperCase().trim();
 
-    if (term.trim().length === 0) {
+    if (term.length === 0) {
         response.send(contacts);
     } else {
         response.send(contacts.filter(c => c.firstName.toUpperCase().includes(term)) || c.lastName.toUpperCase().includes(term) || c.phone.toUpperCase().includes(term));
@@ -20,7 +20,7 @@ router.post("/api/contacts", function (request, response) {
     if (contact.firstName.trim().length === 0) {
         response.send({
             success: false,
-            message: "firstNameInvalidError"
+            code: "firstNameInvalidError"
         });
         return;
     }
@@ -28,7 +28,7 @@ router.post("/api/contacts", function (request, response) {
     if (contact.lastName.trim().length === 0) {
         response.send({
             success: false,
-            message: "lastNameInvalidError"
+            code: "lastNameInvalidError"
         });
         return;
     }
@@ -36,7 +36,7 @@ router.post("/api/contacts", function (request, response) {
     if (contact.phone.trim().length === 0) {
         response.send({
             success: false,
-            message: "phoneInvalidError"
+            code: "phoneInvalidError"
         });
         return;
     }
@@ -44,7 +44,7 @@ router.post("/api/contacts", function (request, response) {
     if (isNaN(Number(contact.phone.trim()))) {
         response.send({
             success: false,
-            message: "phoneIncorrectFormatError"
+            code: "phoneIncorrectFormatError"
         });
         return;
     }
@@ -54,7 +54,7 @@ router.post("/api/contacts", function (request, response) {
     if (contacts.some(c => c.phone.toUpperCase() === phone)) {
         response.send({
             success: false,
-            message: "phoneExistError"
+            code: "phoneExistError"
         });
         return;
     }
@@ -65,7 +65,7 @@ router.post("/api/contacts", function (request, response) {
 
     response.send({
         success: true,
-        message: null
+        code: null
     });
 });
 
@@ -75,7 +75,7 @@ router.put("/api/contacts", function (request, response) {
     if (contact.firstName.trim().length === 0) {
         response.send({
             success: false,
-            message: "firstNameInvalidErrorà"
+            code: "firstNameInvalidError"
         });
         return;
     }
@@ -83,7 +83,7 @@ router.put("/api/contacts", function (request, response) {
     if (contact.lastName.trim().length === 0) {
         response.send({
             success: false,
-            message: "lastNameInvalidError"
+            code: "lastNameInvalidError"
         });
         return;
     }
@@ -91,7 +91,7 @@ router.put("/api/contacts", function (request, response) {
     if (contact.phone.trim().length === 0) {
         response.send({
             success: false,
-            message: "phoneInvalidError"
+            code: "phoneInvalidError"
         });
         return;
     }
@@ -99,7 +99,7 @@ router.put("/api/contacts", function (request, response) {
     if (isNaN(Number(contact.phone.trim()))) {
         response.send({
             success: false,
-            message: "phoneIncorrectFormatError"
+            code: "phoneIncorrectFormatError"
         });
         return;
     }
@@ -109,7 +109,7 @@ router.put("/api/contacts", function (request, response) {
     if (contacts.some(c => c.id !== contact.id && c.phone.toUpperCase() === phone)) {
         response.send({
             success: false,
-            message: "phoneExistError"
+            code: "phoneExistError"
         });
         return;
     }
@@ -119,7 +119,7 @@ router.put("/api/contacts", function (request, response) {
     if (contactIndex < 0) {
         response.send({
             success: false,
-            message: "contactNotFoundError"
+            code: "contactNotFoundError"
         });
         return;
     }
@@ -128,7 +128,7 @@ router.put("/api/contacts", function (request, response) {
 
     response.send({
         success: true,
-        message: null
+        code: null
     });
 });
 
@@ -137,14 +137,15 @@ router.delete("/api/contacts", function (request, response) {
 
     contactsId.forEach(id => {
         const index = contacts.findIndex(c => c.id === Number(id));
-            if (index >= 0) {
-                contacts.splice(index, 1);
-            }
+
+        if (index >= 0) {
+            contacts.splice(index, 1);
+        }
     });
 
     response.send({
         success: true,
-        message: null
+        code: null
     });
 });
 
@@ -158,7 +159,7 @@ router.delete("/api/contacts/:id", function (request, response) {
 
     response.send({
         success: true,
-        message: null
+        code: null
     });
 });
 

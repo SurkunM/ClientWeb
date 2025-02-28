@@ -36,10 +36,6 @@
             }
         },
 
-        emits: {
-            "selected-contact": null,
-            "contact-edit": null,
-            "contact-delete": null
-        }
+        emits: ["selected-contact", "contact-edit", "contact-delete"]
     }
 </script>

@@ -121,7 +121,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody id="tbody">
+                <tbody>
                     <phone-book-item v-for="(contact, index) in contacts"
                                      :contact="contact"
                                      :index="index"
@@ -225,8 +225,7 @@
                 if (this.firstName.length > 0) {
                     this.isFirstNameFieldValid = false;
                     this.isFirstNameFieldComplete = true;
-                }
-                else {
+                } else {
                     this.isFirstNameFieldComplete = false;
                 }
             },
@@ -332,12 +331,13 @@
                 this.service.createContact(contact)
                     .then(response => {
                         if (!response.success) {
-                            if (response.message === this.phoneExistErrorCode) {
+                            if (response.code === this.phoneExistErrorCode) {
                                 this.phoneInvalidText = "Контакт с таким телефоном уже существует!";
                                 this.isPhoneFieldValid = true;
                             } else {
                                 this.showErrorAlert("Введены не коректные данные!");
                             }
+
                             return;
                         }
 
@@ -358,9 +358,10 @@
             deleteSingleContact() {
                 this.service.deleteContact(this.selectedContact.id)
                     .then((response) => {
-                        const x = response.message;
+                        const x = response.code;
                         this.getContacts();
                         this.showSuccessAlert("Контакт успешно удален!");
+
                         if (this.isSearchModeActive) {
                             this.setShowContactsCount();
                         }
@@ -385,7 +386,7 @@
                 this.service.deleteSelectedContacts(contactsId)
                     .then(response => {
                         if (!response.success) {
-                            this.showErrorAlert(response.message);
+                            this.showErrorAlert(response.code);
                             return;
                         }
 
@@ -421,11 +422,12 @@
                 this.service.editContact(editedContact)
                     .then(response => {
                         if (!response.success) {
-                            if (response.message === this.phoneExistErrorCode) {
+                            if (response.code === this.phoneExistErrorCode) {
                                 this.$refs.contactEditingModal.setPhoneExistInvalid();
                             } else {
                                 this.$refs.contactEditingModal.checkEditFormFieldsInvalid();
                             }
+
                             return;
                         }
 

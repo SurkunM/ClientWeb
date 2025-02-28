@@ -16,7 +16,7 @@
     </div>
 </template>
 
-<script>    
+<script>
     import Modal from "bootstrap/js/dist/modal";
 
     export default {
@@ -45,8 +45,6 @@
             }
         },
 
-        emits: {
-            "all-selected-delete": null
-        }
+        emits: ["all-selected-delete"]
     }
 </script>

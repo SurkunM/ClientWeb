@@ -176,8 +176,6 @@
             }
         },
 
-        emits: {
-            "save": null
-        }
+        emits: ["save"]
     }
 </script>

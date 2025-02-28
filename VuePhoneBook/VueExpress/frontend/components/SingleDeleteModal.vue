@@ -22,7 +22,7 @@
     export default {
         data() {
             return {
-                instance: null,
+                instance: null
             };
         },
 
@@ -40,8 +40,6 @@
             }
         },
 
-        emits: {
-            "delete": null
-        }
+        emits: ["delete"]
     }
 </script>
